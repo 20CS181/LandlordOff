@@ -8,3 +8,8 @@ For cs181 final project in Shanghaitech.
 ### 洛谷猪国杀 https://www.luogu.com.cn/problem/P2482
 
 ### 比较全面的相关算法 https://ninesun.blog.csdn.net/article/list/3
+
+## Plan before 1st pre
+1. Pokers delivery in random.
+2. Legal potions.
+3. Winner judgement.
