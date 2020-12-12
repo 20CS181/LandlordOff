@@ -16,4 +16,5 @@ player = HumanAgent(name, w1, True)
 while not player.isWinner():
     print("your cards:", player.cards)
     player.takeAction(None)
+    
 print("finish!")

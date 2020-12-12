@@ -20,9 +20,9 @@ class Agent:
         return self.name
 
     def isWinner(self):
-        return True if len(self.cards)==0 else False
+        return True if self.cards==[] else False
 
-    def getAction(self, state):
+    def takeAction(self, state):
         """
         The Agent will receive a GameState (from either {pacman, capture, sonar}.py) and
         must return an action
@@ -33,40 +33,48 @@ class Agent:
     def updateCards(self, cards_out):
         for card_out in cards_out:
             for card in self.cards:
-                if card[2:] == str(card_out):
-                    self.cards.remove(card)
+                if (card[1:] == card_out) or (card == card_out):
+                        self.cards.remove(card)
+                        break
 
-    def takeAction(self, state):
-        action = self.getAction(state)
-        if action == None:
-            return self.cards
-        else:
-            self.updateCards(action)
-            return self.cards
+    # def takeAction(self, state):
+        # action = self.getAction(state)
+        # if action == None:
+        #     return self.cards
+        # else:
+        #     self.updateCards(action)
+        #     return self.cards
 
 
 class HumanAgent(Agent):
-    def getAction(self, state):
-        choice = input("player %s: \nplease enter your card choices in ONE LINE:"%(self.name))
-        cards_out = choice.split()
-        # if pass
-        if cards_out == []:
-            return None
+    def takeAction(self, state):
+        while True:
+            choice = input("player %s: \nplease enter your card choices in ONE LINE:"%(self.name))
+            cards_out = choice.split()
+            # if pass
+            if cards_out == []:
+                return self.cards
 
-        # check if input valid
-        # if not recurse
-        print("Your choice: ", cards_out)
-        for card_out in cards_out:
-            find = False
-            for card in self.cards:
-                if card[1:] == str(card_out) or card == card_out:
-                    self.cards.remove(card)
-                    find = True
-            if not find:
-                print("invalid card choice!! Enter again!!\n") 
-                return self.getAction(state)
+            # check if input valid
+            # if not, recurse
+            cur_cards = self.cards[:]
+            print("Your choice: ", cards_out)
+            for card_out in cards_out:
+                find = False
+                for card in cur_cards:
+                    if (card[1:] == card_out) or (card == card_out):
+                        cur_cards.remove(card)
+                        find = True
+                        break
+                if not find:
+                    print("invalid card choice!! no card `%s` available!! Please enter again!!\n"%card_out) 
+                    print("available cards: ", self.cards)
+                    continue
+            if find:
 
-        return cards_out
+                self.cards = cur_cards
+                return self.cards
+            
 
 
 ######################## helper function ##############################
