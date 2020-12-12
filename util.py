@@ -29,13 +29,13 @@ def deliver():
 
 
 def print_cards():
-	legal_id = [0, 1, 2]
+	legal_id = ['0', '1', '2']
 	id = input("enter your player id(in 0, 1, 2): ")
-	assert (id not in legal_id), "invalid player id"
-	if id == 0:
-		print(w1)
-	if id == 1:
-		print(w2)
-	if id == 2:
-		print(w3)
+	assert (id in legal_id), "invalid player id"
+	if id == '0':
+		print("your cards: ", w1)
+	if id == '1':
+		print("your cards: ", w2)
+	if id == '2':
+		print("your cards: ", w3)
 
