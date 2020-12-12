@@ -13,3 +13,7 @@ For cs181 final project in Shanghaitech.
 1. Pokers delivery in random.
 2. Legal potions.
 3. Winner judgement.
+
+1.0   12/ 12
+## Agents
+in `game.py` (默认AI是地主)
