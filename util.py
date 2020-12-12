@@ -7,8 +7,8 @@ w1 = []
 w2 = []
 w3 = []
 
-""" press 3 enter and 
-output: cards of three players, with 3 cards for landlord
+"""
+output: deliver cards to three players, with 3 cards for landlord
 """
 def deliver():
     L = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -35,11 +35,11 @@ def print_cards():
     id = input("enter your player id(in 0, 1, 2): ")
     assert (id in legal_id), "invalid player id"
     if id == '0':
-        print("your cards: ", w1)
+        print("for player 0, your cards: ", w1)
     if id == '1':
-        print("your cards: ", w2)
+        print("for player 1,your cards: ", w2)
     if id == '2':
-        print("your cards: ", w3)
+        print("for player 2,your cards: ", w3)
 
 
 def raiseNotDefined():

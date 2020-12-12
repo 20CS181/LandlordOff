@@ -16,4 +16,4 @@ For cs181 final project in Shanghaitech.
 
 1.0   12/ 12
 ## Agents
-in `game.py` (默认AI是地主)
+in `game.py` (`utils.py`, `play.py`用来测试`HumanAgent`)
