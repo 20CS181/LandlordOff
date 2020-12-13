@@ -14,7 +14,17 @@ For cs181 final project in Shanghaitech.
 2. Legal potions.
 3. Winner judgement.
 
-1.0   12/ 12
+
 ## Agents
-in `HumanAgent.py` (`utils.py`, `play.py`用来测试`HumanAgent`)
-in `AIagent.py`
+### in `HumanAgent.py`:
+12/ 12
+claim `class Agent`, `class HumanAgent`.
+(`utils.py`, `play.py`用来测试`HumanAgent`)
+
+
+### in `AIagent.py`:
+12/14
+
+
+## Game playing
+### in `card_dealing.py`:
