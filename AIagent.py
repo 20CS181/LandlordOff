@@ -234,6 +234,7 @@ class AI_agent(agent):
                     choices.sort()
                     return choices.pop[0]
 
+        # 3+1
         def three_plus_one():
             if len(self.other_cards)==4:
                 pai_to_number[self.other_cards]

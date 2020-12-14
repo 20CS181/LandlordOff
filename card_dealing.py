@@ -2,10 +2,11 @@ import random as R
 import sys
 import time
 import os
-from agent import*
+from HumanAgent import*
+from AIagent import*
 
 ####################
-#顺牌
+# 顺牌
 def card_sort(m_card_list):
     card_value_dic = {'3':0,'4':1,'5':2,'6':3,'7':4,'8':5,'9':6,'10':7,'J':8,'Q':9,'K':10,'A':11,'2':12, " x":13, " X":14}
     def find_in_dic(ele):
@@ -19,7 +20,7 @@ def card_sort(m_card_list):
 class gamestate():
     def __init__(self,player1,player2,player3): 
         ###################
-        #分牌
+        # 分牌
         #输入是玩家的名称，输出是一个dic    
         def random_card(player1,player2,player3):
             L = [' A', ' 2', ' 3', ' 4', ' 5', ' 6', ' 7', ' 8', ' 9', ' 10', ' J', ' Q', ' K']
