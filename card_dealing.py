@@ -17,11 +17,11 @@ def card_sort(m_card_list):
             return card_value_dic[a]
     m_card_list.sort(key = find_in_dic)
     
-class gamestate():
+class GameState():
     def __init__(self,player1,player2,player3):
         ###################
         # 分牌
-        #输入是玩家的名称，输出是一个dic    
+        # 输入是玩家的名称，输出是一个dic    
         def random_card(player1, player2, player3):
             L = [' A', ' 2', ' 3', ' 4', ' 5', ' 6', ' 7', ' 8', ' 9', ' 10', ' J', ' Q', ' K']
             H = ['\u2660', '\u2663', '\u2665', '\u2666']
@@ -46,6 +46,7 @@ class gamestate():
         self.card_dic=random_card(player1, player2, player3)
         # cards of the current turn
         self.cards_out=None
+        self.whose_turn=None
         ##################
         #叫地主
         print("Mr Master is the landlord. The landlord's card are: ",self.card_dic["base_cards"])
@@ -78,17 +79,6 @@ class gamestate():
             return True
         return False
 
-    #更新card_dic
-    def update(self,num,P1,P2,P3):
-        if num == 1:
-            a = P1.takeAction(self)
-            self.card_dic[P1.getName()] = a
-        if num == 2:
-            a = P2.takeAction(self)
-            self.card_dic[P2.getName()] = a
-        if num == 3:
-            a = P3.takeAction(self)
-            self.card_dic[P3.getName()] = a
 
     #返回谁是winner，返回玩家输入的名字
     def Winner(self):
@@ -102,6 +92,13 @@ class gamestate():
     def Card_dic(self):
         return self.card_dic
 
+#更新card_dic
+def update(state, player):
+    """ 
+    update the current gamestate after one player hand some cards out.
+    """
+    action = player.takeAction(state)
+    state.card_dic[player.getName] = action
 
 # main process:
 ###############################################################################
@@ -114,35 +111,37 @@ player2 = input("Your are player 1, please type in your player name: ")
 player3 = input("Your are player 2, please type in your player name: ")
 
 # init three players
-game=gamestate(player1, player2, player3)
+game=GameState(player1, player2, player3)
 card_dic = game.Card_dic()
 P1 = AI_agent(player1,card_dic[player1], True)
 P2 = HumanAgent(player2,card_dic[player2], False)
 P3 = HumanAgent(player3,card_dic[player2], False)
 
-# play the game
-whose_turn = 1
+# play the game, whose_turn indicates the player to play:
+# P1: the AI_agent
+# P2, P2: the humanAget
+game.whose_turn = 1
 while game.finish(P1,P2,P3) !=True:
-    if whose_turn == 1:
+    if game.whose_turn == 1:
         print(player1+"! Is your turn to release cards.")
         os.system( 'pause' )
         game.see_card(player1)
-        game.update(1,P1,P2,P3)
-        whose_turn = 2
+        update(game, P1)
+        game.whose_turn = 2
 
-    elif whose_turn == 2:
+    elif game.whose_turn == 2:
         print(player2+"! Is your turn to release cards.")
         os.system( 'pause' )
         game.see_card(player2)
-        game.update(2,P1,P2,P3)
-        whose_turn = 3
+        update(game, P2)
+        game.whose_turn = 3
     
     else:
         print(player3+"! Is your turn to release cards.")
         os.system( 'pause' )
         game.see_card(player3)
-        game.update(3,P1,P2,P3)
-        whose_turn = 1
+        update(game, P3)
+        game.whose_turn = 1
 
 winner = game.Winner()
 if winner == "Mr Master":

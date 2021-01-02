@@ -24,8 +24,9 @@ class Agent:
 
     def takeAction(self, state):
         """
-        The Agent will receive a GameState (from either {pacman, capture, sonar}.py) and
-        must return an action
+        The Agent will receive a GameState,
+        it must take an action 
+        and return the remaining cards
         """
         raiseNotDefined()
 
