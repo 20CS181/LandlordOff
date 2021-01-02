@@ -46,7 +46,11 @@ class GameState():
         self.card_dic=random_card(player1, player2, player3)
         # cards of the current turn
         self.cards_out=None
-        self.whose_turn=None
+        """ 
+        P1: the AI_agent
+        P2, P3: the humanAgent 
+        """
+        self.whose_turn=1
         ##################
         #叫地主
         print("Mr Master is the landlord. The landlord's card are: ",self.card_dic["base_cards"])
@@ -114,13 +118,12 @@ player3 = input("Your are player 2, please type in your player name: ")
 game=GameState(player1, player2, player3)
 card_dic = game.Card_dic()
 P1 = AI_agent(player1,card_dic[player1], True)
-P2 = HumanAgent(player2,card_dic[player2], False)
-P3 = HumanAgent(player3,card_dic[player2], False)
+P2 = HumanAgent(player2, card_dic[player2], False)
+P3 = HumanAgent(player3, card_dic[player2], False)
 
-# play the game, whose_turn indicates the player to play:
-# P1: the AI_agent
-# P2, P2: the humanAget
-game.whose_turn = 1
+""" 
+play the game, whose_turn indicates the player to play:
+"""
 while game.finish(P1,P2,P3) !=True:
     if game.whose_turn == 1:
         print(player1+"! Is your turn to release cards.")
