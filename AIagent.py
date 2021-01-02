@@ -1,30 +1,4 @@
 from collections import Counter
-from HumanAgent import Agent
-
-
-class card_type:
-    def __init__(self, card_list,gamestate):
-        self.gamestate=gamestate
-        self.card_dic={}
-        self.L= ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2', 'X','x']
-        for i in self.L:
-            self.card_dic[i]=0
-        self.card_base_value=card_base_value(card_list)
-        self.value=0
-    def card_base_value(self,card_list):
-        card_base_value=0
-        self.card_base={}
-        for i in range(self.L):
-            self.card_base[L[i]]=i
-        for i in card_list:
-            self.card_dic[i]=self.card_dic[i]+1
-            card_base_value=card_base_value+card_base[i]
-        return card_base_value
-    def get_cards(self):
-        print(self.card_dic)
-    def get_value(self):
-        print(self.value)
-
 
 transf=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2', 'x','X']
 def pai_to_number(pai):
@@ -38,82 +12,84 @@ def number_to_pai(number):
         pai.append(transf[i])
     return pai
 
-
-class AI_agent(Agent):
-    def __init__(self, gamestate, cards):
-        self.other_cards=gamestate.cur_cards
-        self.flag=gamestate.user_states
-        self.possible_choice={}
-        self.mycards=cards
+    
+def get_legal_choices(cards):
+        possible_choice={}
+        mycards=cards
         for i in range(6):
-            self.possible_choice[i]=[]
+            possible_choice[i]=[]
         #maintain possible_choices
         #wang_zha
             #nothing needa to be done
         #danpai
-        for i in self.mycards.keys():
-                   if self.mycards[i]>0:
-                       self.possible_choice[1].append(i)
+        for i in mycards.keys():
+                   if mycards[i]>0:
+                       possible_choice[1].append(i)
         #two
-        for i in self.mycards.keys():
-                   if self.mycards[i]>1:
-                       self.possible_choice[2].append(i)      
+        for i in mycards.keys():
+                   if mycards[i]>1:
+                       possible_choice[2].append(i)      
         #three
-        for i in self.mycards.keys():
-                   if self.mycards[i]>2:
-                       self.possible_choice[3].append(i)                   
+        for i in mycards.keys():
+                   if mycards[i]>2:
+                       possible_choice[3].append(i)                   
         #dan_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         for j in t:
-            if self.mycards[j]>0:
+            if mycards[j]>0:
                 count=count+1
                 if count >=5:
                     for i in range(count-4):
-                       self.possible_choice[4].append(t[(t.index(j)-count+1+i):(t.index(j)+1)])
+                       possible_choice[4].append(t[(t.index(j)-count+1+i):(t.index(j)+1)])
             else:  count=0               
         #er_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         for j in t:
-            if self.mycards[j]>1:
+            if mycards[j]>1:
                 count=count+1
                 if count >=3:
                     for i in range(count-2):
                        tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
-                       self.possible_choice[5].append(tep+tep)
+                       possible_choice[5].append(tep+tep)
             else:  count=0           
         #san_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         for j in t:
-            if self.mycards[j]>1:
+            if mycards[j]>1:
                 count=count+1
                 if count >=2:
                     for i in range(count-1):
                        tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
-                       self.possible_choice[6].append(tep+tep+tep)
+                       possible_choice[6].append(tep+tep+tep)
             else:  count=0                 
         #three_plus_one
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
         for j in t:
-            if self.mycards[j]>2:
+            if mycards[j]>2:
                 for i in mycards.keys():
                     if i != j and mycards[i]>0:
-                        self.possible_choice[7].append([j,j,j,i])
+                        possible_choice[7].append([j,j,j,i])
         #three_plus_two
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
         for j in t:
-            if self.mycards[j]>2:
+            if mycards[j]>2:
                 for i in mycards.keys():
                     if i != j and mycards[i]>1:
-                        self.possible_choice[8].append([j,j,j,i,i])     
+                        possible_choice[8].append([j,j,j,i,i])     
         #bomb
         for i in self.mycards.keys():
                    if self.mycards[i]>3:
-                       self.possible_choice[9].append(i)   
-
-        
+                       possible_choice[9].append(i)
+        return possible_choice
+class AI_agent(agent):
+    def take_action(self,gamestate):
+        self.other_cards=gamestate.cur_cards
+        self.flag=gamestate.user_states
+        self.mycards=self.cards
+        self.possible_choice=get_legal_choices(self.mycards)
     def get_action(self):
         def wang_zha():
             if 'x' in self.other_cards and 'X' in self.other_cards: return None
@@ -130,7 +106,9 @@ class AI_agent(Agent):
                     if choices[i] > self.other_cards[0] :
                         number_to_pai(choices)
                         act=[choices[i]]
-                        choices.pop[i]
+                        #delete
+                        self.mycards.remove(choices[i])
+                        self.possible_choice=get_legal_choices(self.mycards)
                         return act
                 return None
             
@@ -147,7 +125,10 @@ class AI_agent(Agent):
                         if choices[i] > self.other_cards[0] :
                             number_to_pai(choices)
                             act=[choices[i],choices[i]]
-                            choices.pop[i]
+                            #delete
+                            for j in range(2) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)
                             return act
                     return None
         
@@ -164,7 +145,9 @@ class AI_agent(Agent):
                         if choices[i] > self.other_cards[0] :
                             number_to_pai(choices)
                             act=[choices[i],choices[i],choices[i]]
-                            choices.pop[i]
+                            for j in range(3) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)
                             return act
                     return None
                 
@@ -182,14 +165,13 @@ class AI_agent(Agent):
                         choices[i].sort()
                         if choices[i][0] >self.other_cards[0] :
                             act=choices[i]
-                            for j in range(len(choices)):
-                                pai_to_number(choices[j])
-                                choices[j].sort()
-                                if choices[i][0]== choices[j][0] :
-                                    choices.pop[j]
-                                else:
-                                    number_to_pai(choices[j])
                             number_to_pai(act)
+                            
+                            #delete
+                            for j in range(len(act)) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)
+                            
                             return act
                 return None
 
@@ -202,45 +184,76 @@ class AI_agent(Agent):
             dict = {}
             for key in self.other_cards:
                 dict[key] = dict.get(key, 0) + 1
-            
+            a=[]
+            a=dict.values()
+            for i in range(len(a)):
+                if a[i]!=2 :
+                    return None
 
             #去重，再排序
+            sorted(set(self.other_cards), key = self.other_cards.index)
             if all([self.other_cards[i]+1 == self.other_cards[i+1] for i in range(len(self.other_cards)-1)]) :
-                choices=self.possible_choice[4]
+                choices=self.possible_choice[5]
                 if choices==[]:return None
 
                 for i in range(len(choices)):
-                    if len(choices) ==len(self.other_cards) and len(choices)>2 :
+                    if len(choices) ==length_other and len(choices)>4 :
                         pai_to_number(choices[i])
                         choices[i].sort()
                         if choices[i][0] >self.other_cards[0] :
                             act=choices[i]
-                            for j in range(len(choices)):
-                                pai_to_number(choices[j])
-                                choices[j].sort()
-                                if choices[i][0]== choices[j][0] :
-                                    choices.pop[j]
-                                else:
-                                    number_to_pai(choices[j])
                             number_to_pai(act)
+                            
+                            #delete
+                            for j in range(len(act)) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)
+                                    
                             return act
                 return None
 
         #333,444,555,...
         def san_lian():
-            if len(self.other_cards):
-                if self.other_cards[0]==self.other_cards[1] and self.other_cards[0]==self.other_cards[2]:
-                    choices=self.possible_choice[6]
-                    if choices==[]:return None
-                    choices.sort()
-                    return choices.pop[0]
+            pai_to_number[self.other_cards]
+            self.other_cards.sort()
+            length_other=len(self.other_cards)
+            #每个值频率为3
+            dict = {}
+            for key in self.other_cards:
+                dict[key] = dict.get(key, 0) + 1
+            a=[]
+            a=dict.values()
+            for i in range(len(a)):
+                if a[i]!=3 :
+                    return None
 
-        # 3+1
+            #去重，再排序
+            sorted(set(self.other_cards), key = self.other_cards.index)
+            if all([self.other_cards[i]+1 == self.other_cards[i+1] for i in range(len(self.other_cards)-1)]) :
+                choices=self.possible_choice[6]
+                if choices==[]:return None
+
+                for i in range(len(choices)):
+                    if len(choices) ==length_other and len(choices)>3 :
+                        pai_to_number(choices[i])
+                        choices[i].sort()
+                        if choices[i][0] >self.other_cards[0] :
+                            act=choices[i]
+                            number_to_pai(act)
+                            
+                            #delete
+                            for j in range(len(act)) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)   
+                            
+                            return act
+                return None
+            
         def three_plus_one():
             if len(self.other_cards)==4:
                 pai_to_number[self.other_cards]
                 #出现频率最高的一个数的频率为3
-                if  Counter(self.other_cards).most_common(1)[0][1]==3 ：
+                if  Counter(self.other_cards).most_common(1)[0][1]==3 :
                     choices=self.possible_choice[7]
                     if choices==[]:return None
 
@@ -250,9 +263,10 @@ class AI_agent(Agent):
                         if three > Counter(self.other_cards).most_common(1)[0][0] :
                             number_to_pai(choices[i])
                             act=choices[i]
-                            for j in range(len(choices)):
-                                if three== Counter(choices[j]).most_common(1)[0][0] :
-                                    choices.pop[j]
+                            #delete
+                            for j in range(4) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)   
                             return act
                     return None
                 
@@ -265,7 +279,7 @@ class AI_agent(Agent):
                 while most_number in self.other_cards:
                     self.other_cards.remove(most_number)
                 min_f=Counter(self.other_cards).most_common(1)[0][1]
-                if  max_f==3 and min_f=2 ：
+                if  max_f==3 and min_f==2 :
                     choices=self.possible_choice[8]
                     if choices==[]:return None
 
@@ -275,9 +289,10 @@ class AI_agent(Agent):
                         if three > most_number :
                             number_to_pai(choices[i])
                             act=choices[i]
-                            for j in range(len(choices)):
-                                if three== Counter(choices[j]).most_common(1)[0][0] :
-                                    choices.pop[j]
+                            #delete
+                            for j in range(5) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)   
                             return act
                     return None
 
@@ -294,7 +309,10 @@ class AI_agent(Agent):
                         if choices[i] > self.other_cards[0] :
                             number_to_pai(choices)
                             act=[choices[i],choices[i],choices[i],choices[i]]
-                            choices.pop[i]
+                            #delete
+                            for j in range(4) :
+                                self.mycard.remove(act[j])
+                            self.possible_choice=get_legal_choices(self.mycards)   
                             return act
                     return None
           
