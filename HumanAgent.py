@@ -71,7 +71,7 @@ class HumanAgent(Agent):
                     print("available cards: ", self.cards)
                     continue
             if find:
-
+                state.cards_out=cards_out
                 self.cards = cur_cards
                 return self.cards
             

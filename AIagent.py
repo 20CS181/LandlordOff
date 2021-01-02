@@ -1,4 +1,5 @@
 from collections import Counter
+from HumanAgent import Agent
 
 
 class card_type:
@@ -38,8 +39,8 @@ def number_to_pai(number):
     return pai
 
 
-class AI_agent(agent):
-    def __init__(self,gamestate,cards):
+class AI_agent(Agent):
+    def __init__(self, gamestate, cards):
         self.other_cards=gamestate.cur_cards
         self.flag=gamestate.user_states
         self.possible_choice={}

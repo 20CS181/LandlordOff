@@ -2,8 +2,8 @@ import random as R
 import sys
 import time
 import os
-from HumanAgent import*
-from AIagent import*
+from HumanAgent import *
+from AIagent import *
 
 ####################
 # 顺牌
@@ -18,11 +18,11 @@ def card_sort(m_card_list):
     m_card_list.sort(key = find_in_dic)
     
 class gamestate():
-    def __init__(self,player1,player2,player3): 
+    def __init__(self,player1,player2,player3):
         ###################
         # 分牌
         #输入是玩家的名称，输出是一个dic    
-        def random_card(player1,player2,player3):
+        def random_card(player1, player2, player3):
             L = [' A', ' 2', ' 3', ' 4', ' 5', ' 6', ' 7', ' 8', ' 9', ' 10', ' J', ' Q', ' K']
             H = ['\u2660', '\u2663', '\u2665', '\u2666']
 
@@ -40,10 +40,12 @@ class gamestate():
                 for x in m_list[i]:
                     P.pop(P.index(x))
 
-            card_dic = {player1:m_list[0],player2:m_list[1],player3:m_list[2],"base_cards":P}
+            card_dic = {player1:m_list[0], player2:m_list[1],player3:m_list[2],"base_cards":P}
             return card_dic
          
-        self.card_dic=random_card(player1,player2,player3)
+        self.card_dic=random_card(player1, player2, player3)
+        # cards of the current turn
+        self.cards_out=None
         ##################
         #叫地主
         print("Mr Master is the landlord. The landlord's card are: ",self.card_dic["base_cards"])
@@ -51,10 +53,11 @@ class gamestate():
         self.card_dic[player1].extend(self.card_dic["base_cards"])
         
         self.winner = None
+
     ##################
-    #看牌
-    #输入是玩家名称和card_dic，print出玩家手中的牌
-    def see_card(self,playerID):
+    # 看牌
+    # 输入是玩家名称和card_dic，print出玩家手中的牌
+    def see_card(self, playerID):
         if playerID not in self.card_dic.keys():
             print("Wrong user name, please type in again: ")
         else:
@@ -98,6 +101,8 @@ class gamestate():
     #返回card_dic
     def Card_dic(self):
         return self.card_dic
+
+
 # main process:
 ###############################################################################
 #type in the user name
@@ -108,12 +113,14 @@ print("Now please create your name!")
 player2 = input("Your are player 1, please type in your player name: ")
 player3 = input("Your are player 2, please type in your player name: ")
 
-game=gamestate(player1,player2,player3)
+# init three players
+game=gamestate(player1, player2, player3)
 card_dic = game.Card_dic()
-P1 = AIagent(player1,card_dic[player1],True)
-P2 = HumanAgent(player2,card_dic[player2],False)
-P3 = HumanAgent(player3,card_dic[player2],False)
+P1 = AI_agent(player1,card_dic[player1], True)
+P2 = HumanAgent(player2,card_dic[player2], False)
+P3 = HumanAgent(player3,card_dic[player2], False)
 
+# play the game
 whose_turn = 1
 while game.finish(P1,P2,P3) !=True:
     if whose_turn == 1:
