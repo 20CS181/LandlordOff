@@ -358,10 +358,16 @@ class AI_agent(Agent):
             #we_action=dan_pai()
             rand_num=random.randint(1,9)
             print(self.possible_choice)
-            we_action=self.possible_choice[rand_num][0]
+            if self.possible_choice[rand_num] !=[]:
+              we_action=self.possible_choice[rand_num][0]
+            else:
+              we_action=None
             while we_action is None : 
                 rand_num=random.randint(1,9)
-                we_action=self.possible_choice[rand_num][0]
+                if self.possible_choice[rand_num] !=[]:
+                    we_action=self.possible_choice[rand_num][0]
+                else:
+                    we_action=None
             if rand_num==2:
                 we_action=[we_action]+[we_action]
             if rand_num==3:
