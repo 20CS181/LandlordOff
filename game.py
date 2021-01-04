@@ -8,12 +8,12 @@ from AIagent import *
 ####################
 # 顺牌
 def card_sort(m_card_list):
-    card_value_dic = {'3':0,'4':1,'5':2,'6':3,'7':4,'8':5,'9':6,'10':7,'J':8,'Q':9,'K':10,'A':11,'2':12, " x":13, " X":14}
+    card_value_dic = {'3':0,'4':1,'5':2,'6':3,'7':4,'8':5,'9':6,'10':7,'J':8,'Q':9,'K':10,'A':11,'2':12, "x":13, "X":14}
     def find_in_dic(ele):
-        if ele == " X" or ele == " x":
+        if ele == "X" or ele == "x":
             return card_value_dic[ele]
         else:
-            a = ele[2:]
+            a = ele
             return card_value_dic[a]
     m_card_list.sort(key = find_in_dic)
     
@@ -41,6 +41,10 @@ class GameState():
                     P.pop(P.index(x))
 
             card_dic = {player1:m_list[0], player2:m_list[1],player3:m_list[2],"base_cards":P}
+            #delete the huase 
+            for i in card_dic.keys():
+                for j in range(len(card_dic[i])):
+                    card_dic[i][j]=card_dic[i][j][card_dic[i][j].find(" ")+1:]
             return card_dic
          
         self.card_dic=random_card(player1, player2, player3)
@@ -51,6 +55,7 @@ class GameState():
         P2, P3: the humanAgent 
         """
         self.whose_turn=1
+        self.last_turn="Mr Master"
         ##################
         #叫地主
         print("Mr Master is the landlord. The landlord's card are: ",self.card_dic["base_cards"])
@@ -69,7 +74,7 @@ class GameState():
             card_sort(self.card_dic[playerID])
             print(self.card_dic[playerID])
             os.system( 'pause' )
-            os.system('cls')
+            #os.system('cls')
 
     def finish(self,P1,P2,P3):
         if P1.isWinner() == True:
@@ -128,22 +133,28 @@ while game.finish(P1,P2,P3) !=True:
     if game.whose_turn == 1:
         print(player1+"! Is your turn to release cards.")
         os.system( 'pause' )
+        print("last_turn is %s and puts out:"%(game.last_turn),game.cards_out)
         game.see_card(player1)
         update(game, P1)
+        os.system('cls')
         game.whose_turn = 2
-
     elif game.whose_turn == 2:
         print(player2+"! Is your turn to release cards.")
         os.system( 'pause' )
+        print("last_turn is %s and puts out:"%(game.last_turn),game.cards_out)
         game.see_card(player2)
         update(game, P2)
+        os.system('cls')
         game.whose_turn = 3
     
     else:
         print(player3+"! Is your turn to release cards.")
         os.system( 'pause' )
+        print("last_turn is %s and puts out:"%(game.last_turn),game.cards_out)
         game.see_card(player3)
         update(game, P3)
+        os.system('cls')
+
         game.whose_turn = 1
 
 winner = game.Winner()

@@ -28,15 +28,17 @@ class Agent:
         it must take an action 
         and return the remaining cards
         """
-        raiseNotDefined()
+        #raiseNotDefined()
 
     # update leagal cards
     def updateCards(self, cards_out):
+        copy_cards=self.cards
         for card_out in cards_out:
             for card in self.cards:
                 if (card[1:] == card_out) or (card == card_out):
-                        self.cards.remove(card)
+                        copy_cards.remove(card)
                         break
+        self.cards=copy_cards
 
     # def takeAction(self, state):
         # action = self.getAction(state)
@@ -58,11 +60,11 @@ class HumanAgent(Agent):
 
             # check if input valid
             # if not, recurse
-            cur_cards = self.cards[:]
+            cur_cards = self.cards
             print("Your choice: ", cards_out)
             for card_out in cards_out:
                 find = False
-                for card in cur_cards:
+                for card in cur_cards :
                     if (card[1:] == card_out) or (card == card_out):
                         cur_cards.remove(card)
                         find = True
@@ -70,9 +72,11 @@ class HumanAgent(Agent):
                 if not find:
                     print("invalid card choice!! no card `%s` available!! Please enter again!!\n"%card_out) 
                     print("available cards: ", self.cards)
-                    continue
+                    #continue
             if find:
                 state.cards_out=cards_out
+                #print("this round player %s take out"%(self.name),cards_out)
+                state.last_turn=self.name
                 self.cards = cur_cards
                 return self.cards
             
