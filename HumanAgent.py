@@ -3,6 +3,7 @@ import os
 import traceback
 import sys
 import inspect
+from collections import Counter
 
 class Agent:
     """
@@ -67,6 +68,8 @@ class HumanAgent(Agent):
             # if not, recurse
             cur_cards = self.cards.copy()
             print("Your choice: ", cards_out)
+
+            # check if the chosen cards exist
             for card_out in cards_out:
                 find = False
                 for card in cur_cards :
@@ -78,18 +81,58 @@ class HumanAgent(Agent):
                     print("invalid card choice!! no card `%s` available!! Please enter again!!\n"%card_out) 
                     print("available cards: ", self.cards)
                     #continue
-            if find:
+
+            # check if the action is leagal
+            legal = self.checkAction(state.cards_out, cards_out, (state.last_turn==self.name))
+            if not legal:
+                print("invalid card choice!! make sure you follow the rules!!\n") 
+                print("In last turn, %s puts out "%(state.last_turn), (state.cards_out)) 
+            
+            if find and legal:
                 state.cards_out=cards_out
                 #print("this round player %s take out"%(self.name),cards_out)
                 state.last_turn=self.name
                 self.cards = cur_cards
                 return self.cards
 
-    def getAction(self, state):
-        other_cards = []
-        state.cards_out
+    def checkAction(self, last_cards, my_cards, is_active):
+        """ given `last_cards` from the other, check if `my_cards` are leagal """
         # wang_zha
-        # if state
+        if last_cards==['x', 'X']: return False
+        
+        # default as cards with colors
+        
+        # others
+        # func=[dan_pai,two,three,three_plus_one,three_plus_two,dan_lian,er_lian,san_lian]
+        priority = {'3':0, '4':1, '5':2, '6':3, '7':4, '8':5, '9':6, '0':7, 'J':8, 'Q':9, 'K':10, 'A':11, '2':12, "x":13, "X":14}
+        otherCards = Counter() 
+        for card_with_color in last_cards:
+            otherCards[card_with_color[-1]]+=1
+        
+        myCards = Counter()
+        for card_with_color in my_cards:
+            myCards[card_with_color[-1]]+=1
+
+        # dan_pai
+        if len(my_cards)==1:
+            if is_active: 
+                return True
+            elif len(last_cards)==1 and  priority[my_cards[0]] > priority[last_cards[0]]: 
+                return True
+            else: 
+                return False
+        
+        # two
+        if len(my_cards)==2 and (my_cards[0]==my_cards[1]):
+            if is_active: 
+                return True
+            elif len(last_cards)==1 and  priority[my_cards[0]] > priority[last_cards[0]]: 
+                return True
+            else: 
+                return False
+        
+        return True
+        
             
 
 

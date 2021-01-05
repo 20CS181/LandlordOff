@@ -44,7 +44,7 @@ def get_legal_choices(cards):
             possible_choice[i]=[]
         #maintain possible_choices
         #wang_zha
-            #nothing needa to be done
+            #nothing need to be done
             
         #danpai
         for i in mycards.keys():
@@ -53,11 +53,11 @@ def get_legal_choices(cards):
         #two
         for i in mycards.keys():
                    if mycards[i]>1:
-                       possible_choice[2].append(i)      
+                       possible_choice[2].append(i)
         #three
         for i in mycards.keys():
                    if mycards[i]>2:
-                       possible_choice[3].append(i)                   
+                       possible_choice[3].append(i)
         #dan_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -166,7 +166,7 @@ class AI_agent(Agent):
                         self.possible_choice=get_legal_choices(self.mycards)
                         return act
                 return None
-            
+        # duizi
         def two():
             if len(self.other_cards)==2:
                 if self.other_cards[0]==self.other_cards[1]:
@@ -305,7 +305,8 @@ class AI_agent(Agent):
                             
                             return act
                 return None
-            
+        
+        # 3+1
         def three_plus_one():
             if len(self.other_cards)==4:
                 other_cards=pai_to_number(self.other_cards)
@@ -326,7 +327,8 @@ class AI_agent(Agent):
                             self.possible_choice=get_legal_choices(self.mycards)   
                             return act
                     return None
-                
+        
+        # 3+2
         def three_plus_two():
             if len(self.other_cards)==5:
                 other_cards=pai_to_number(self.other_cards)
@@ -353,6 +355,7 @@ class AI_agent(Agent):
                             return act
                     return None
 
+        
         def bomb():
             if len(self.other_cards)==4:
                 if all(item ==self.other_cards[0] for item in self.other_cards):
