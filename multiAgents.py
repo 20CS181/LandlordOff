@@ -1,9 +1,6 @@
-from game import Directions
-from game import Actions
-
 import random, util
 
-from game import Agent
+from HumanAgent import Agent
 
 def scoreEvaluationFunction(currentGameState):
     """

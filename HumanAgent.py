@@ -28,7 +28,7 @@ class Agent:
         it must take an action 
         and return the remaining cards
         """
-        #raiseNotDefined()
+        raiseNotDefined()
 
     # update leagal cards
     def updateCards(self, cards_out):
@@ -51,6 +51,8 @@ class Agent:
 
 class HumanAgent(Agent):
     def takeAction(self, state):
+        # active
+        # to make sure you have the cards you hand out
         while True:
             choice = input("player %s: \nplease enter your card choices in ONE LINE:"%(self.name))
             cards_out = choice.split()
@@ -60,7 +62,7 @@ class HumanAgent(Agent):
 
             # check if input valid
             # if not, recurse
-            cur_cards = self.cards
+            cur_cards = self.cards.copy()
             print("Your choice: ", cards_out)
             for card_out in cards_out:
                 find = False

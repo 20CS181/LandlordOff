@@ -1,5 +1,6 @@
 from util import *
-from game import *
+from AIagent import AIagent
+# from game import GameState
 
 
 print("…………………………delivering…………………………")
@@ -15,7 +16,7 @@ name = input("enter your name:")
 # print("list:", newlist) 
 
 
-player = HumanAgent(name, w1, True)
+player = AIagent(name, w1, True)
 
 while not player.isWinner():
     print("your cards:", player.cards)

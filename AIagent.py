@@ -1,5 +1,5 @@
 from collections import Counter
-from HumanAgent import * 
+from HumanAgent import Agent
 import random
 
 transf=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2', 'x','X']
@@ -22,7 +22,7 @@ def tranf_from_list_to_dic(card_list):
 def tranf_from_dic_to_list(card_dic):
     l=[]
     for i in card_dic.keys():
-        for j in range(card_dic[i]):
+        for _ in range(card_dic[i]):
            l.append(i)
     return l
         
@@ -103,6 +103,7 @@ def get_legal_choices(cards):
         return possible_choice
 class AI_agent(Agent):
     def takeAction(self,gamestate):
+        # 上一轮别人出的牌
         self.other_cards=gamestate.cards_out
          
         self.mycards=self.cards
@@ -116,12 +117,15 @@ class AI_agent(Agent):
             gamestate.cards_out=self.cards_out
             gamestate.last_turn=self.name
             print("this round player %s take out:"%(self.name),self.cards_out)
+        # return the remaining cards
         return self.cards
 
     def get_action(self,gamestate):
         def wang_zha():
-            if 'x' in self.other_cards and 'X' in self.other_cards: return None
-            
+            return ['x', 'X'] \
+                if 'x' in self.other_cards and 'X' in self.other_cards \
+                else None
+        # 单牌
         def dan_pai():
             if  len(self.other_cards)==1:
                 choices=self.possible_choice[1] 
@@ -309,7 +313,7 @@ class AI_agent(Agent):
                 other_cards=pai_to_number(self.other_cards)
                 #出现频率最高的一个数的频率为3，次高为2
                 max_f=Counter(other_cards).most_common(1)[0][1]
-                most_number==Counter(other_cards).most_common(1)[0][0]
+                most_number=Counter(other_cards).most_common(1)[0][0]
                 while most_number in other_cards:
                     other_cards.remove(most_number)
                 min_f=Counter(other_cards).most_common(1)[0][1]
@@ -377,7 +381,7 @@ class AI_agent(Agent):
             return we_action
         else:
             we_action=wang_zha()
-            if  we_action is not None: return we_action
+            if  wang_zha() is not None: return we_action
             
             we_action=dan_pai()
             if  we_action is not None: return we_action

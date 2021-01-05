@@ -8,6 +8,7 @@ from AIagent import *
 ####################
 # 顺牌
 def card_sort(m_card_list):
+    """ sort the cards from 3~ K~ X """
     card_value_dic = {'3':0,'4':1,'5':2,'6':3,'7':4,'8':5,'9':6,'10':7,'J':8,'Q':9,'K':10,'A':11,'2':12, "x":13, "X":14}
     def find_in_dic(ele):
         if ele == "X" or ele == "x":
@@ -46,23 +47,24 @@ class GameState():
                 for j in range(len(card_dic[i])):
                     card_dic[i][j]=card_dic[i][j][card_dic[i][j].find(" ")+1:]
             return card_dic
-         
-        self.card_dic=random_card(player1, player2, player3)
-        # cards of the current turn
-        self.cards_out=None
+        ########################################################################## end of function
+        # GameState attributes 
         """ 
         P1: the AI_agent
         P2, P3: the humanAgent 
         """
         self.whose_turn=1
         self.last_turn="Mr Master"
+
+
+        self.card_dic=random_card(player1, player2, player3)
+        self.cards_out=None # cards of the current turn
+        self.winner = None
         ##################
         #叫地主
         print("Mr Master is the landlord. The landlord's card are: ",self.card_dic["base_cards"])
         print("let's begin the game.")
         self.card_dic[player1].extend(self.card_dic["base_cards"])
-        
-        self.winner = None
 
     ##################
     # 看牌
@@ -72,9 +74,17 @@ class GameState():
             print("Wrong user name, please type in again: ")
         else:
             card_sort(self.card_dic[playerID])
-            print(self.card_dic[playerID])
-            os.system( 'pause' )
+            print("Here are cards for %s:"%playerID, self.card_dic[playerID])
+            # os.system( 'pause' )
             #os.system('cls')
+
+    def update_cards(self, playerID, newcards):
+        """ internally update the cards of certain player in the current gamestate
+        do **nothing** if no such player exists"""
+        if playerID not in self.card_dic.keys():
+            return
+        else:
+            self.card_dic[playerID] = newcards
 
     def finish(self,P1,P2,P3):
         if P1.isWinner() == True:
@@ -106,8 +116,10 @@ def update(state, player):
     """ 
     update the current gamestate after one player hand some cards out.
     """
-    action = player.takeAction(state)
-    state.card_dic[player.getName] = action
+    remaining_cards = player.takeAction(state)
+    state.update_cards(player, remaining_cards)
+    os.system( 'pause' )
+
 
 # main process:
 ###############################################################################
@@ -122,18 +134,23 @@ player3 = input("Your are player 2, please type in your player name: ")
 # init three players
 game=GameState(player1, player2, player3)
 card_dic = game.Card_dic()
-P1 = AI_agent(player1,card_dic[player1], True)
+P1 = AI_agent(player1, card_dic[player1], True)
 P2 = HumanAgent(player2, card_dic[player2], False)
-P3 = HumanAgent(player3, card_dic[player2], False)
+P3 = HumanAgent(player3, card_dic[player3], False)
 
 """ 
 play the game, whose_turn indicates the player to play:
 """
+# Mr. Master goes first
+update(game, P1)
+os.system('cls')
+game.whose_turn=2
+
 while game.finish(P1,P2,P3) !=True:
     if game.whose_turn == 1:
         print(player1+"! Is your turn to release cards.")
         os.system( 'pause' )
-        print("last_turn is %s and puts out:"%(game.last_turn),game.cards_out)
+        print("last_turn is %s and puts out:"%(game.last_turn), game.cards_out)
         game.see_card(player1)
         update(game, P1)
         os.system('cls')
