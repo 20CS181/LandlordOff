@@ -29,16 +29,19 @@ class Agent:
         and return the remaining cards
         """
         raiseNotDefined()
+    
+    def getAction(self, state):
+        raiseNotDefined()
 
     # update leagal cards
-    def updateCards(self, cards_out):
-        copy_cards=self.cards
-        for card_out in cards_out:
-            for card in self.cards:
-                if (card[1:] == card_out) or (card == card_out):
-                        copy_cards.remove(card)
-                        break
-        self.cards=copy_cards
+    # def updateCards(self, cards_out):
+    #     copy_cards=self.cards
+    #     for card_out in cards_out:
+    #         for card in self.cards:
+    #             if (card[1:] == card_out) or (card == card_out):
+    #                     copy_cards.remove(card)
+    #                     break
+    #     self.cards=copy_cards
 
     # def takeAction(self, state):
         # action = self.getAction(state)
@@ -81,6 +84,12 @@ class HumanAgent(Agent):
                 state.last_turn=self.name
                 self.cards = cur_cards
                 return self.cards
+
+    def getAction(self, state):
+        other_cards = []
+        state.cards_out
+        # wang_zha
+        # if state
             
 
 

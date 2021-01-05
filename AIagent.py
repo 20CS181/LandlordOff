@@ -25,10 +25,18 @@ def tranf_from_dic_to_list(card_dic):
         for _ in range(card_dic[i]):
            l.append(i)
     return l
-        
-    
-def get_legal_choices(cards):
 
+
+def get_legal_choices(cards):
+        """ return a dictionary: {
+            0:[]
+            1:[single cards]
+            2:[two]
+            3:[three]
+            4:[dan_lian]
+            ...
+        } 
+        """
         possible_choice={}
        
         mycards= tranf_from_list_to_dic(cards)
@@ -101,30 +109,41 @@ def get_legal_choices(cards):
                    if mycards[i]>3:
                        possible_choice[9].append(i)
         return possible_choice
+
 class AI_agent(Agent):
     def takeAction(self,gamestate):
         # 上一轮别人出的牌
         self.other_cards=gamestate.cards_out
-         
+        
+        # my current cards
         self.mycards=self.cards
+
+
+        # try to take an action
         print("before_cards:",self.mycards)
         self.possible_choice=get_legal_choices(self.cards)
         self.cards_out=self.get_action(gamestate)
         self.cards=self.mycards
         print("try:",self.cards_out)
         print("after_cards:",self.mycards)
+
+        # maintain the gamestate
         if self.cards_out!=None:
             gamestate.cards_out=self.cards_out
             gamestate.last_turn=self.name
             print("this round player %s take out:"%(self.name),self.cards_out)
+        
         # return the remaining cards
         return self.cards
 
-    def get_action(self,gamestate):
+    def get_action(self, gamestate):
+        """ judge the cards of others
+        for active: random choose an available one
+        for passive: try to follow the others under the rule
+        """
         def wang_zha():
-            return ['x', 'X'] \
-                if 'x' in self.other_cards and 'X' in self.other_cards \
-                else None
+            return ('x' in self.other_cards and 'X' in self.other_cards)
+
         # 单牌
         def dan_pai():
             if  len(self.other_cards)==1:
@@ -380,8 +399,8 @@ class AI_agent(Agent):
                 self.mycards.remove(we_action[i])
             return we_action
         else:
-            we_action=wang_zha()
-            if  wang_zha() is not None: return we_action
+            # passively put cards
+            if  wang_zha(): return []
             
             we_action=dan_pai()
             if  we_action is not None: return we_action

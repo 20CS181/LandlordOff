@@ -1,6 +1,4 @@
-import random, util
-
-from HumanAgent import Agent
+from HumanAgent import Agent, raiseNotDefined
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -10,7 +8,7 @@ def scoreEvaluationFunction(currentGameState):
     This evaluation function is meant for use with adversarial search agents
     (not reflex agents).
     """
-    return currentGameState.getScore()
+    raiseNotDefined()
 
 class MultiAgentSearchAgent(Agent):
     """

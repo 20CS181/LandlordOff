@@ -1,7 +1,5 @@
 import random as R
-import sys
-import time
-import os
+import os, sys, time
 from HumanAgent import *
 from AIagent import *
 
@@ -80,7 +78,8 @@ class GameState():
 
     def update_cards(self, playerID, newcards):
         """ internally update the cards of certain player in the current gamestate
-        do **nothing** if no such player exists"""
+        do **nothing** if no such player exists
+        """
         if playerID not in self.card_dic.keys():
             return
         else:
