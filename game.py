@@ -9,6 +9,10 @@ def card_sort(m_card_list):
     """ sort the cards from 3~ K~ X """
     card_value_dic = {'3':0,'4':1,'5':2,'6':3,'7':4,'8':5,'9':6,'10':7,'J':8,'Q':9,'K':10,'A':11,'2':12, "x":13, "X":14}
     def find_in_dic(ele):
+        if ele[-1]=='0':
+            ele="10"
+        else:
+            ele=ele[-1]
         if ele == "X" or ele == "x":
             return card_value_dic[ele]
         else:
@@ -40,10 +44,7 @@ class GameState():
                     P.pop(P.index(x))
 
             card_dic = {player1:m_list[0], player2:m_list[1],player3:m_list[2],"base_cards":P}
-            #delete the huase 
-            for i in card_dic.keys():
-                for j in range(len(card_dic[i])):
-                    card_dic[i][j]=card_dic[i][j][card_dic[i][j].find(" ")+1:]
+            
             return card_dic
         ########################################################################## end of function
         # GameState attributes 
@@ -56,13 +57,23 @@ class GameState():
 
 
         self.card_dic=random_card(player1, player2, player3)
+        self.copy_card_dic={}
+        #delete the huase 
+        for i in self.card_dic.keys():
+            self.copy_card_dic[i]=[]
+            for j in range(len(self.card_dic[i])):
+                self.copy_card_dic[i].append(" ")
+                self.copy_card_dic[i][j]=self.card_dic[i][j][self.card_dic[i][j].find(" ")+1:]
+        self.card_dic,self.copy_card_dic=self.copy_card_dic,self.card_dic
         self.cards_out=None # cards of the current turn
         self.winner = None
         ##################
         #叫地主
-        print("Mr Master is the landlord. The landlord's card are: ",self.card_dic["base_cards"])
+        print("Mr Master is the landlord. The landlord's card are: ",self.copy_card_dic["base_cards"])
         print("let's begin the game.")
         self.card_dic[player1].extend(self.card_dic["base_cards"])
+        self.copy_card_dic[player1].extend(self.copy_card_dic["base_cards"])
+
 
     ##################
     # 看牌
@@ -71,8 +82,8 @@ class GameState():
         if playerID not in self.card_dic.keys():
             print("Wrong user name, please type in again: ")
         else:
-            card_sort(self.card_dic[playerID])
-            print("Here are cards for %s:"%playerID, self.card_dic[playerID])
+            card_sort(self.copy_card_dic[playerID])
+            print("Here are cards for %s:"%playerID, self.copy_card_dic[playerID])
             # os.system( 'pause' )
             #os.system('cls')
 
