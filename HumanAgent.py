@@ -83,7 +83,8 @@ class HumanAgent(Agent):
                     #continue
 
             # check if the action is leagal
-            legal = self.checkAction(state.cards_out, cards_out, (state.last_turn==self.name))
+            is_active = state.last_turn==self.name
+            legal = self.checkAction(state.cards_out, cards_out, is_active)
             if not legal:
                 print("invalid card choice!! make sure you follow the rules!!\n") 
                 print("In last turn, %s puts out "%(state.last_turn), (state.cards_out)) 
@@ -96,44 +97,125 @@ class HumanAgent(Agent):
                 return self.cards
 
     def checkAction(self, last_cards, my_cards, is_active):
-        """ given `last_cards` from the other, check if `my_cards` are leagal """
+        """ given `last_cards` from the other, check if `my_cards` are leagal 
+        first try to find a legal format,
+        if failed, return False. """
         # wang_zha
         if last_cards==['x', 'X']: return False
-        
-        # default as cards with colors
-        
-        # others
-        # func=[dan_pai,two,three,three_plus_one,three_plus_two,dan_lian,er_lian,san_lian]
-        priority = {'3':0, '4':1, '5':2, '6':3, '7':4, '8':5, '9':6, '0':7, 'J':8, 'Q':9, 'K':10, 'A':11, '2':12, "x":13, "X":14}
-        otherCards = Counter() 
-        for card_with_color in last_cards:
-            otherCards[card_with_color[-1]]+=1
-        
-        myCards = Counter()
-        for card_with_color in my_cards:
-            myCards[card_with_color[-1]]+=1
+        if my_cards==['x', 'X']: return True
 
+        
+        # others: 10 -> 0
+        priority = Counter({'3':0, '4':1, '5':2, '6':3, '7':4, '8':5, '9':6, '0':7, 'J':8, 'Q':9, 'K':10, 'A':11, '2':12, "x":13, "X":14})
+        def find_prior(ele):
+            return priority[ele]
+
+        cards_last=[card[-1] for card in last_cards]
+        cards_last.sort(key=find_prior)
+        cards_mine=[card[-1] for card in my_cards]
+        cards_mine.sort(key=find_prior)
+        
+        # func=[dan_pai,two,three,three_plus_one, three_plus_two, dan_lian, er_lian,san_lian]
+        otherCardsCounter = Counter() 
+        for card in cards_last:
+            otherCardsCounter[card]+=1
+
+        myCardsCounter = Counter()
+        for card in cards_mine:
+            myCardsCounter[card]+=1
+
+        # bomb
+        if len(cards_mine)==4 and myCardsCounter.most_common(1)[0][1]==4:
+            return not(cards_mine==['x', 'X']) and \
+                 not(len(cards_last)==4 and otherCardsCounter.most_common(1)[0][1]==4 and priority[cards_mine[0]] < priority[cards_last[0]])
+        
         # dan_pai
-        if len(my_cards)==1:
+        if len(cards_mine)==1:
+            # act freely as long as following the rule
             if is_active: 
                 return True
-            elif len(last_cards)==1 and  priority[my_cards[0]] > priority[last_cards[0]]: 
+            # follow the previous player, same bellow
+            elif len(cards_last)==1 and priority[cards_mine[0]] > priority[cards_last[0]]: 
                 return True
             else: 
                 return False
         
-        # two
-        if len(my_cards)==2 and (my_cards[0]==my_cards[1]):
+        # two same
+        if len(cards_mine)==2 and (cards_mine[0]==cards_mine[1]):
             if is_active: 
                 return True
-            elif len(last_cards)==1 and  priority[my_cards[0]] > priority[last_cards[0]]: 
+            elif len(cards_last)==2 and (cards_last[0]==cards_last[1]) and priority[cards_mine[0]] > priority[cards_last[0]]: 
                 return True
             else: 
                 return False
-        
-        return True
-        
-            
+
+        # three same
+        if len(cards_mine)==3 and (cards_mine[0]==cards_mine[1]==cards_last[2]):
+            if is_active: 
+                return True
+            elif len(cards_last)==3 and (cards_last[0]==cards_last[1]==cards_last[2]) and priority[cards_mine[0]] > priority[cards_last[0]]: 
+                return True
+            else: 
+                return False
+
+
+        # three_plus_one
+        my_most_card = myCardsCounter.most_common(1)[0][0]
+        if len(cards_mine)==4 and myCardsCounter[my_most_card]==3:
+            if is_active: 
+                return True
+            elif len(cards_last)==4 and (otherCardsCounter.most_common(1)[0][1]==3):
+                my_three = my_most_card
+                other_three = otherCardsCounter.most_common(1)[0][0]
+                return True if priority[my_three] > priority[other_three] else False 
+            else: 
+                return False
+
+        # three_plus_two
+        if len(cards_mine)==5 and myCardsCounter[my_most_card]==3:
+            myCardsCounter[my_most_card]=0
+            my_least_card = myCardsCounter.most_common(1)[0][0]
+            if myCardsCounter[my_least_card]!=2:
+                return False
+            if is_active: 
+                return True
+            elif len(cards_last)==5 and (otherCardsCounter.most_common(1)[0][1]==3):
+                my_three=my_most_card
+                other_three = otherCardsCounter.most_common(1)[0][0]
+                return True if priority[my_three] > priority[other_three] else False 
+            else: 
+                return False
+
+        # lian  shun_zi
+        # remove redundency
+        same_frequent = myCardsCounter.most_common(1)[0][1]
+        for key in myCardsCounter.keys():
+            if myCardsCounter[key]!=same_frequent:
+                return False
+        cards_mine=list(set(cards_mine))
+
+        # dan_lian, er_lian, san_lian
+        if all([ (priority[cards_mine[i+1]]==priority[cards_mine[i]]+1) for i in range(len(cards_mine)-1)]):
+            print ("shun_zi!")
+            if is_active:
+                return True
+            else:
+                # other is shunzi with same length, same freq
+                other_freq = otherCardsCounter.most_common(1)[0][1]
+                for key in otherCardsCounter.keys():
+                    if otherCardsCounter[key]!=other_freq:
+                        return False
+                if other_freq!=same_frequent: return False
+                
+                # same length 
+                cards_last = list(set(cards_last))
+                if len(cards_last)!=len(cards_mine): return False
+
+                if all([ (priority[cards_last[i+1]]==priority[cards_last[i]]+1) for i in range(len(cards_mine)-1)]) \
+                     and priority[cards_mine[0]] > priority[cards_last[0]]:
+                    return True
+        # invalid format
+        return False
 
 
 ######################## helper function ##############################

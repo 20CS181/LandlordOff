@@ -1,7 +1,7 @@
 import random as R
 import os, sys, time
-from HumanAgent import *
-from AIagent import *
+from HumanAgent import Agent, HumanAgent
+from AIagent import AI_agent
 
 ####################
 # 顺牌
@@ -26,24 +26,30 @@ class GameState():
         # 分牌
         # 输入是玩家的名称，输出是一个dic    
         def random_card(player1, player2, player3):
-            L = [' A', ' 2', ' 3', ' 4', ' 5', ' 6', ' 7', ' 8', ' 9', ' 10', ' J', ' Q', ' K']
-            H = ['\u2660', '\u2663', '\u2665', '\u2666']
+            """ output a dictionary with sorted lists """
+            numbers = [' A', ' 2', ' 3', ' 4', ' 5', ' 6', ' 7', ' 8', ' 9', ' 10', ' J', ' Q', ' K']
+            colors = ['\u2660', '\u2663', '\u2665', '\u2666']
+            kings = [' X',' x']
 
-            P = [' X',' x']
-            for x in H:
-                for y in L:
+            # mix together
+            for x in colors:
+                for y in numbers:
                     s = x + y
-                    P.append(s)
+                    kings.append(s)
 
-            R.shuffle(P)
+            # shuffle
+            R.shuffle(kings)
             m_list = [[],[],[]]
 
+            # sample and sort 3 list and a base_cards
             for i in range(3):
-                m_list[i] = R.sample(P, 17)
+                m_list[i] = R.sample(kings, 17)
                 for x in m_list[i]:
-                    P.pop(P.index(x))
+                    kings.pop(kings.index(x))
+                card_sort(m_list[i])
+            card_sort(kings)
 
-            card_dic = {player1:m_list[0], player2:m_list[1],player3:m_list[2],"base_cards":P}
+            card_dic = {player1:m_list[0], player2:m_list[1],player3:m_list[2],"base_cards":kings}
             
             return card_dic
         ########################################################################## end of function
@@ -54,7 +60,6 @@ class GameState():
         """
         self.whose_turn=1
         self.last_turn="Mr Master"
-
 
         self.card_dic=random_card(player1, player2, player3)
         self.copy_card_dic={}

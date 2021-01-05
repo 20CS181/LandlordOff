@@ -195,7 +195,7 @@ class AI_agent(Agent):
                             self.possible_choice=get_legal_choices(self.mycards)
                             return act
                     return None
-        
+        # three same
         def three():
             if len(self.other_cards)==3:
                 if self.other_cards[0]==self.other_cards[1] and self.other_cards[0]==self.other_cards[2]:
@@ -412,7 +412,7 @@ class AI_agent(Agent):
             return we_action
         else:
             # passively put cards
-            if  wang_zha(): return []
+            if  wang_zha(): return None
             
             we_action=dan_pai()
             if  we_action is not None: return we_action
