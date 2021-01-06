@@ -122,12 +122,12 @@ class AI_agent(Agent):
         self.mycards_huase=gamestate.colored_card_dic[self.name]
 
         # try to take an action
-        print("before_cards:",self.mycards)
+        # print("before_cards:",self.mycards)
         self.possible_choice=get_legal_choices(self.cards)
         self.cards_out=self.get_action(gamestate)
         self.cards=self.mycards
-        print("try:",self.cards_out)
-        print("after_cards:",self.mycards)
+        # print("try:",self.cards_out)
+        # print("after_cards:",self.mycards)
 
         # maintain the gamestate
         if self.cards_out!=None:
@@ -138,7 +138,7 @@ class AI_agent(Agent):
             #remove the cards in huase
             for card_out in self.cards_out:
                 for card in self.mycards_huase:
-                    if (card[1:] == card_out) or (card[-1] == card_out) or (card == card_out):
+                    if card[-1] == card_out[-1]:
                         self.mycards_huase.remove(card)
                         break
             gamestate.colored_card_dic[self.name]=self.mycards_huase
@@ -392,7 +392,7 @@ class AI_agent(Agent):
             #self.other_cards=[-1]
             #we_action=dan_pai()
             rand_num=random.randint(1,9)
-            print(self.possible_choice)
+            # print("possible choices for %s: "%self.name, self.possible_choice)
             if self.possible_choice[rand_num] !=[]:
               we_action=self.possible_choice[rand_num][0]
             else:

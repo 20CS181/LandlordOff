@@ -27,18 +27,18 @@ game.whose_turn=2
 
 while game.finish(P1, P2, P3) !=True:
     if game.whose_turn == 1:
-        print(player1 + "! Is your turn to release cards.")
+        print(player1 + "!\nIs your turn to release cards.")
         os.system( 'pause' )
         if (game.last_turn==player1):
             print("last_turn is you and you put out:", game.cards_out)
         else:
             print("last_turn is %s and puts out:"%(game.last_turn), game.cards_out)
-        game.see_card(player1)
+        # game.see_card(player1)
         update(game, P1, )
         os.system('cls')
         game.whose_turn = 2
     elif game.whose_turn == 2:
-        print(player2 + "! Is your turn to release cards.")
+        print(player2 + "!\nIs your turn to release cards.")
         os.system( 'pause' )
         if (game.last_turn==player2):
             print("last_turn is you and you put out:", game.cards_out)
@@ -49,7 +49,7 @@ while game.finish(P1, P2, P3) !=True:
         os.system('cls')
         game.whose_turn = 3
     else:
-        print(player3 + "! Is your turn to release cards.")
+        print(player3 + "!\nIs your turn to release cards.")
         os.system( 'pause' )
         if (game.last_turn==player3):
             print("last_turn is you and you put out:", game.cards_out)
@@ -65,4 +65,4 @@ winner = game.Winner()
 if winner == "Mr Master":
     print("The landlord wins!")
 else:
-    print("The landlord has been defeated. congratulations!")
+    print("The landlord has been defeated.\ncongratulations!!")

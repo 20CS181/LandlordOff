@@ -21,7 +21,7 @@ def card_sort(m_card_list):
     m_card_list.sort(key = find_in_dic)
     
 class GameState():
-    def __init__(self,player1,player2,player3):
+    def __init__(self, player1, player2, player3):
         ###################
         # 分牌
         # 输入是玩家的名称，输出是一个dic    
@@ -49,7 +49,7 @@ class GameState():
                 card_sort(m_list[i])
             card_sort(kings)
 
-            card_dic = {player1:m_list[0], player2:m_list[1], player3:m_list[2], "base_cards":kings}
+            card_dic = {player1: m_list[0], player2: m_list[1], player3: m_list[2], "base_cards":kings}
             
             return card_dic
         ##################################################### end of function
@@ -60,27 +60,24 @@ class GameState():
         """
         self.whose_turn=1
         self.last_turn="Mr Master"
-        self.is_active=True
 
         self.card_dic=random_card(player1, player2, player3)
-        self.colored_card_dic=copy.deepcopy(self.card_dic)
-
-        #delete the huase in `card_dic`
-        for i in self.card_dic.keys():
-            # self.colored_card_dic[i]=[]
-            for j in range(len(self.card_dic[i])):
-                # self.colored_card_dic[i].append(" ")
-                self.card_dic[i][j]=self.card_dic[i][j][self.card_dic[i][j].find(" ")+1:]
-        # self.card_dic, self.colored_card_dic = self.colored_card_dic, self.card_dic
-
         self.cards_out=None # cards of the current turn
         self.winner = None
         ##################
         #叫地主
-        print("Mr Master is the landlord. The landlord's card are: ",self.colored_card_dic["base_cards"])
-        print("let's begin the game.")
+        print("Mr Master is the landlord. The landlord's card are: ", self.card_dic["base_cards"])
         self.card_dic[player1].extend(self.card_dic["base_cards"])
-        self.colored_card_dic[player1].extend(self.colored_card_dic["base_cards"])
+        del self.card_dic["base_cards"]
+        self.colored_card_dic=copy.deepcopy(self.card_dic)
+
+        #delete the huase in `card_dic`
+        for i in self.card_dic.keys():
+            for j in range(len(self.card_dic[i])):
+                self.card_dic[i][j]=self.card_dic[i][j][self.card_dic[i][j].find(" ")+1:]
+        # print("card_dic:", self.card_dic)
+        # print("colored_card_dic:", self.colored_card_dic)
+        print("let's begin the game.")
 
 
     ##################
@@ -91,9 +88,11 @@ class GameState():
             print("Wrong user name, please type in again: ")
         else:
             card_sort(self.colored_card_dic[playerID])
+            print("………………………let's…see…cards…………………………………")
             print("Here are cards for %s:"%playerID, self.colored_card_dic[playerID])
-            # os.system( 'pause' )
-            #os.system('cls')
+            print("The players' remaining cards:")
+            for player in self.card_dic.keys():
+                print("%s: "%player, len(self.colored_card_dic[player]))
 
     def update_cards(self, playerID, newcards):
         """ internally update the cards of certain player in the current gamestate
@@ -104,9 +103,6 @@ class GameState():
         else:
             self.card_dic[playerID] = newcards
     
-    def update_active(self, is_active):
-        self.is_active = is_active
-
     def finish(self,P1,P2,P3):
         if P1.isWinner() == True:
             self.winner = P1.getName()
@@ -137,6 +133,7 @@ def update(state, player):
     """ 
     update the current gamestate after one player hand some cards out.
     """
+    print("………………choose…your…cards…out………………………")
     remaining_cards = player.takeAction(state)
     state.update_cards(player, remaining_cards)
     os.system( 'pause' )
