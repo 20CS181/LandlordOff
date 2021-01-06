@@ -34,24 +34,6 @@ class Agent:
     def getAction(self, state):
         raiseNotDefined()
 
-    # update leagal cards
-    # def updateCards(self, cards_out):
-    #     copy_cards=self.cards
-    #     for card_out in cards_out:
-    #         for card in self.cards:
-    #             if (card[1:] == card_out) or (card == card_out):
-    #                     copy_cards.remove(card)
-    #                     break
-    #     self.cards=copy_cards
-
-    # def takeAction(self, state):
-        # action = self.getAction(state)
-        # if action == None:
-        #     return self.cards
-        # else:
-        #     self.updateCards(action)
-        #     return self.cards
-
 
 class HumanAgent(Agent):
     def takeAction(self, state):
@@ -78,19 +60,29 @@ class HumanAgent(Agent):
                         find = True
                         break
                 if not find:
-                    print("invalid card choice!! no card `%s` available!! Please enter again!!\n"%card_out) 
-                    print("available cards: ", self.cards)
+                    print("invalid card choice!! no card `%s` available!! Please enter again!!"%card_out) 
+                    print("available cards: ", state.colored_card_dic[self.name])
                     #continue
 
             # check if the action is leagal
+            # legal = True
             is_active = state.last_turn==self.name
             legal = self.checkAction(state.cards_out, cards_out, is_active)
             if not legal:
-                print("invalid card choice!! make sure you follow the rules!!\n") 
-                print("In last turn, %s puts out "%(state.last_turn), (state.cards_out)) 
+                print("invalid card choice!! make sure you follow the rules!!") 
+                last_turn = "you" if(state.last_turn==self.name)else state.last_turn
+                print("In last turn, %s puts out \n"%(last_turn), (state.cards_out)) 
             
             if find and legal:
                 state.cards_out=cards_out
+
+                #remove the cards in huase
+                for card_out in cards_out:
+                    for card in state.colored_card_dic[self.name]:
+                        if (card[1:] == card_out)or (card[-1] == card_out) or (card == card_out):
+                            state.colored_card_dic[self.name].remove(card)
+                            break
+
                 #print("this round player %s take out"%(self.name),cards_out)
                 state.last_turn=self.name
                 self.cards = cur_cards
@@ -193,29 +185,33 @@ class HumanAgent(Agent):
             if myCardsCounter[key]!=same_frequent:
                 return False
         cards_mine=list(set(cards_mine))
-
+        print("cards_mine:", cards_mine, "cards_last: ", cards_last)
         # dan_lian, er_lian, san_lian
-        if all([ (priority[cards_mine[i+1]]==priority[cards_mine[i]]+1) for i in range(len(cards_mine)-1)]):
-            print ("shun_zi!")
-            if is_active:
-                return True
-            else:
-                # other is shunzi with same length, same freq
-                other_freq = otherCardsCounter.most_common(1)[0][1]
-                for key in otherCardsCounter.keys():
-                    if otherCardsCounter[key]!=other_freq:
-                        return False
-                if other_freq!=same_frequent: return False
+        # for i in range(len(cards_mine)-1):
+            # if (priority[cards_mine[i+1]]!=priority[cards_mine[i]]+1):
+                # return False
+        
+        print ("shun_zi!")
+        return True
+        # if is_active:
+        #     return True
+        # else:
+        #     # other is shunzi with same length, same freq
+        #     other_freq = otherCardsCounter.most_common(1)[0][1]
+        #     for key in otherCardsCounter.keys():
+        #         if otherCardsCounter[key]!=other_freq:
+        #             return False
+        #         if other_freq!=same_frequent: return False
                 
-                # same length 
-                cards_last = list(set(cards_last))
-                if len(cards_last)!=len(cards_mine): return False
+        #     # same length 
+        #     cards_last = list(set(cards_last))
+        #     if len(cards_last)!=len(cards_mine): return False
 
-                if all([ (priority[cards_last[i+1]]==priority[cards_last[i]]+1) for i in range(len(cards_mine)-1)]) \
-                     and priority[cards_mine[0]] > priority[cards_last[0]]:
-                    return True
-        # invalid format
-        return False
+        #     if all([ (priority[cards_last[i+1]]==priority[cards_last[i]]+1) for i in range(len(cards_mine)-1)]) \
+        #          and priority[cards_mine[0]] > priority[cards_last[0]]:
+        #         return True
+        # # invalid format
+        # return False
 
 
 ######################## helper function ##############################

@@ -119,7 +119,7 @@ class AI_agent(Agent):
         self.mycards=self.cards
         
         #huase
-        self.mycards_huase=gamestate.copy_card_dic[self.name]
+        self.mycards_huase=gamestate.colored_card_dic[self.name]
 
         # try to take an action
         print("before_cards:",self.mycards)
@@ -133,15 +133,15 @@ class AI_agent(Agent):
         if self.cards_out!=None:
             gamestate.cards_out=self.cards_out
             gamestate.last_turn=self.name
-            print("this round player %s take out:"%(self.name),self.cards_out)
+            print("this round player %s take out:"%(self.name), self.cards_out)
         
             #remove the cards in huase
             for card_out in self.cards_out:
                 for card in self.mycards_huase:
-                    if (card[1:] == card_out) or (card == card_out):
+                    if (card[1:] == card_out) or (card[-1] == card_out) or (card == card_out):
                         self.mycards_huase.remove(card)
                         break
-            gamestate.copy_card_dic[self.name]=self.mycards_huase
+            gamestate.colored_card_dic[self.name]=self.mycards_huase
         # return the remaining cards
         return self.cards
 

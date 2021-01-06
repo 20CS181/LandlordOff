@@ -1,25 +1,19 @@
-from util import *
-from AIagent import AIagent
-# from game import GameState
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 
+import copy
 
-print("…………………………delivering…………………………")
-deliver()
-# print_cards()
+dict1 =  {'user':'old_child','num':[1,2,3]}
+dict2 = dict1          # 浅拷贝: 引用对象
+dict3 = dict1.copy()   # 浅拷贝：深拷贝父对象（一级目录），子对象（二级目录）不拷贝，还是引用
+dict4 = copy.deepcopy(dict1)
 
-name = input("enter your name:")
-# list = input("player %s: \nplease enter your card choices in ONE LINE:"%(name))
-# input()
-# print("list:", list)
-# print("list:", list.split())
-# print("is empty:", list.split())
-# print("list:", newlist) 
+# 修改 data 数据
+dict1['user']='new_child'
+dict1['num'].remove(1)
 
-
-player = AIagent(name, w1, True)
-
-while not player.isWinner():
-    print("your cards:", player.cards)
-    player.takeAction(None)
-
-print("finish!")
+# 输出结果
+print(dict1)
+print(dict2)
+print(dict3)
+print(dict4)

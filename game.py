@@ -1,5 +1,5 @@
 import random as R
-import os, sys, time
+import os, sys, time, copy
 from HumanAgent import Agent, HumanAgent
 from AIagent import AI_agent
 
@@ -49,10 +49,10 @@ class GameState():
                 card_sort(m_list[i])
             card_sort(kings)
 
-            card_dic = {player1:m_list[0], player2:m_list[1],player3:m_list[2],"base_cards":kings}
+            card_dic = {player1:m_list[0], player2:m_list[1], player3:m_list[2], "base_cards":kings}
             
             return card_dic
-        ########################################################################## end of function
+        ##################################################### end of function
         # GameState attributes 
         """ 
         P1: the AI_agent
@@ -60,24 +60,27 @@ class GameState():
         """
         self.whose_turn=1
         self.last_turn="Mr Master"
+        self.is_active=True
 
         self.card_dic=random_card(player1, player2, player3)
-        self.copy_card_dic={}
-        #delete the huase 
+        self.colored_card_dic=copy.deepcopy(self.card_dic)
+
+        #delete the huase in `card_dic`
         for i in self.card_dic.keys():
-            self.copy_card_dic[i]=[]
+            # self.colored_card_dic[i]=[]
             for j in range(len(self.card_dic[i])):
-                self.copy_card_dic[i].append(" ")
-                self.copy_card_dic[i][j]=self.card_dic[i][j][self.card_dic[i][j].find(" ")+1:]
-        self.card_dic,self.copy_card_dic=self.copy_card_dic,self.card_dic
+                # self.colored_card_dic[i].append(" ")
+                self.card_dic[i][j]=self.card_dic[i][j][self.card_dic[i][j].find(" ")+1:]
+        # self.card_dic, self.colored_card_dic = self.colored_card_dic, self.card_dic
+
         self.cards_out=None # cards of the current turn
         self.winner = None
         ##################
         #叫地主
-        print("Mr Master is the landlord. The landlord's card are: ",self.copy_card_dic["base_cards"])
+        print("Mr Master is the landlord. The landlord's card are: ",self.colored_card_dic["base_cards"])
         print("let's begin the game.")
         self.card_dic[player1].extend(self.card_dic["base_cards"])
-        self.copy_card_dic[player1].extend(self.copy_card_dic["base_cards"])
+        self.colored_card_dic[player1].extend(self.colored_card_dic["base_cards"])
 
 
     ##################
@@ -87,8 +90,8 @@ class GameState():
         if playerID not in self.card_dic.keys():
             print("Wrong user name, please type in again: ")
         else:
-            card_sort(self.copy_card_dic[playerID])
-            print("Here are cards for %s:"%playerID, self.copy_card_dic[playerID])
+            card_sort(self.colored_card_dic[playerID])
+            print("Here are cards for %s:"%playerID, self.colored_card_dic[playerID])
             # os.system( 'pause' )
             #os.system('cls')
 
@@ -100,6 +103,9 @@ class GameState():
             return
         else:
             self.card_dic[playerID] = newcards
+    
+    def update_active(self, is_active):
+        self.is_active = is_active
 
     def finish(self,P1,P2,P3):
         if P1.isWinner() == True:
@@ -134,63 +140,3 @@ def update(state, player):
     remaining_cards = player.takeAction(state)
     state.update_cards(player, remaining_cards)
     os.system( 'pause' )
-
-
-# main process:
-###############################################################################
-#type in the user name
-player1 = "Mr Master"
-print("Hi, this is "+player1+". Are you ready to play with me?")
-os.system( 'pause' )
-print("Now please create your name!")
-player2 = input("Your are player 1, please type in your player name: ")
-player3 = input("Your are player 2, please type in your player name: ")
-
-# init three players
-game=GameState(player1, player2, player3)
-card_dic = game.Card_dic()
-P1 = AI_agent(player1, card_dic[player1], True)
-P2 = HumanAgent(player2, card_dic[player2], False)
-P3 = HumanAgent(player3, card_dic[player3], False)
-
-""" 
-play the game, whose_turn indicates the player to play:
-"""
-# Mr. Master goes first
-update(game, P1)
-os.system('cls')
-game.whose_turn=2
-
-while game.finish(P1,P2,P3) !=True:
-    if game.whose_turn == 1:
-        print(player1+"! Is your turn to release cards.")
-        os.system( 'pause' )
-        print("last_turn is %s and puts out:"%(game.last_turn), game.cards_out)
-        game.see_card(player1)
-        update(game, P1)
-        os.system('cls')
-        game.whose_turn = 2
-    elif game.whose_turn == 2:
-        print(player2+"! Is your turn to release cards.")
-        os.system( 'pause' )
-        print("last_turn is %s and puts out:"%(game.last_turn),game.cards_out)
-        game.see_card(player2)
-        update(game, P2)
-        os.system('cls')
-        game.whose_turn = 3
-    
-    else:
-        print(player3+"! Is your turn to release cards.")
-        os.system( 'pause' )
-        print("last_turn is %s and puts out:"%(game.last_turn),game.cards_out)
-        game.see_card(player3)
-        update(game, P3)
-        os.system('cls')
-
-        game.whose_turn = 1
-
-winner = game.Winner()
-if winner == "Mr Master":
-    print("The landlord wins!")
-else:
-    print("The landlord has been defeated. congratulations!")

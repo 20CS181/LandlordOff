@@ -21,10 +21,12 @@ For cs181 final project in Shanghaitech.
 claim `class Agent`, `class HumanAgent`.
 (`utils.py`, `play.py`用来测试`HumanAgent`)
 
-
 ### in `AIagent.py`:
-12/14
-
+random puts cards
 
 ## Game playing
-### in `card_dealing.py`:
+### in `main.py`:
+the main process to play game.
+
+### in `game.py`:
+some necessary class and function of the GameState
