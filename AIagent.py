@@ -96,7 +96,7 @@ def get_legal_choices(cards):
             if mycards[j]>2:
                 for i in mycards.keys():
                     if i != j and mycards[i]>0:
-                        possible_choice[7].append([j,j,j,i])
+                        possible_choice[7].append([j, j, j, i])
         #three_plus_two
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
         for j in t:
