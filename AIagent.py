@@ -28,12 +28,16 @@ def tranf_from_dic_to_list(card_dic):
 
 def get_legal_choices(cards):
         """ return a dictionary: {
-            0:[]
+            0:[wang_zha]
             1:[single cards]
-            2:[two]
-            3:[three]
+            2:[two same]
+            3:[three same]
             4:[dan_lian]
-            ...
+            5:[er_lian]
+            6:[san_lian]
+            7:[3+1]
+            8:[3+2]
+            9:[bomb]
         } 
         """
         possible_choice={}
@@ -440,3 +444,4 @@ class AI_agent(Agent):
             we_action=bomb()
             if  we_action is not None: return we_action
             return None
+

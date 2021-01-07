@@ -1,48 +1,27 @@
 from collections import Counter
-from HumanAgent import * 
+from AIagent import *
 import random
 
-transf=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2', 'x','X']
-
-def pai_to_number(pai):
-    number=[]
-    for i in pai:
-        number.append(transf.index(i))
-    return number
-def number_to_pai(number):
-    pai=[]
-    for i in number:
-        pai.append(transf[i])
-    return pai
-def tranf_from_list_to_dic(card_list): 
-    d={}
-    for i in transf:
-        d[i]=card_list.count(i)
-    return d
-def tranf_from_dic_to_list(card_dic):
-    l=[]
-    for i in card_dic.keys():
-        for j in range(card_dic[i]):
-           l.append(i)
-    return l
 
 class OneChoice:
     """
     One possible choice.
+    a partition of a series of cards
     """
     def __init__(self):
+        self.num_of_wangzha=0
         self.num_of_danzhang=0
         self.num_of_duizi=0
         self.num_of_sanzhang=0
-        self.num_of_shunzi=0
-        self.num_of_bomb=0
-        self.num_of_feiji=0
-        self.num_of_wangzha=0
+        self.num_of_shunzi=0 # what is shunzi???????
         self.num_of_liandui=0
+        self.num_of_feiji=0
+        self.num_of_bomb=0
         self.num_of_san_dai_yi=0
         self.num_of_san_dai_er=0
         self.num_of_feiji_dai_yi=0
         self.num_of_feiji_dai_er=0
+
         self.list_of_danzhang=[]
         self.list_of_duizi=[]
         self.list_of_sanzhang=[]
@@ -57,7 +36,6 @@ class OneChoice:
         self.list_of_feiji_dai_er=[]
         self.total_times_to_finish=0
         self.value=0
-        
 
 def is_danzhang(cards):
     flag=False
@@ -186,9 +164,7 @@ def find_feiji(mycards):
     return False
 
 def find_wangzha(mycards):
-    if 'x' in mycards and 'X' in mycards:
-        return True
-    return False
+    return (mycards==['x','X'])
 
 #2
 def find_liandui(mycards):
@@ -429,108 +405,24 @@ def chai_pai_second(possible_choice) :
 
 
 def get_value(A_choice):
+    return 0
 
 
+class SearchAgent(AI_agent):
+    def get_action(self, gamestate):
+        """ judge the cards of others
+        for active: random choose an available one
+        for passive: try to follow the others under the rule
+        if quit, return None.
 
-
-
-def get_legal_choices(cards):
-
-        possible_choice={}
-       
-        mycards= tranf_from_list_to_dic(cards)
-        for i in range(10):
-            possible_choice[i]=[]
-        #maintain possible_choices
-        #wang_zha
-            #nothing needa to be done
-            
-        #danpai
-        for i in mycards.keys():
-                   if mycards[i]>0:
-                       possible_choice[1].append(i)
-        #two
-        for i in mycards.keys():
-                   if mycards[i]>1:
-                       possible_choice[2].append(i)      
-        #three
-        for i in mycards.keys():
-                   if mycards[i]>2:
-                       possible_choice[3].append(i)                   
-        #dan_lian
-        count=0
-        t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-        for j in t:
-            if mycards[j]>0:
-                count=count+1
-                if count >=5:
-                    for i in range(count-4):
-                       possible_choice[4].append(t[(t.index(j)-count+1+i):(t.index(j)+1)])
-            else:  count=0               
-        #er_lian
-        count=0
-        t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-        for j in t:
-            if mycards[j]>1:
-                count=count+1
-                if count >=3:
-                    for i in range(count-2):
-                       tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
-                       possible_choice[5].append(tep+tep)
-            else:  count=0           
-        #san_lian
-        count=0
-        t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-        for j in t:
-            if mycards[j]>1:
-                count=count+1
-                if count >=2:
-                    for i in range(count-1):
-                       tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
-                       possible_choice[6].append(tep+tep+tep)
-            else:  count=0                 
-        #three_plus_one
-        t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
-        for j in t:
-            if mycards[j]>2:
-                for i in mycards.keys():
-                    if i != j and mycards[i]>0:
-                        possible_choice[7].append([j,j,j,i])
-        #three_plus_two
-        t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
-        for j in t:
-            if mycards[j]>2:
-                for i in mycards.keys():
-                    if i != j and mycards[i]>1:
-                        possible_choice[8].append([j,j,j,i,i])     
-        #bomb
-        for i in mycards.keys():
-                   if mycards[i]>3:
-                       possible_choice[9].append(i)
-        return possible_choice
-
-
-class AI_agent(Agent):
-    def takeAction(self,gamestate):
-        self.other_cards=gamestate.cards_out
-         
-        self.mycards=self.cards
-        print("before_cards:",self.mycards)
-        self.possible_choice=get_legal_choices(self.cards)
-        self.cards_out=self.get_action(gamestate)
-        self.cards=self.mycards
-        print("try:",self.cards_out)
-        print("after_cards:",self.mycards)
-        if self.cards_out!=None:
-            gamestate.cards_out=self.cards_out
-            gamestate.last_turn=self.name
-            print("this round player %s take out:"%(self.name),self.cards_out)
-        return self.cards
-
-    def get_action(self,gamestate):
+        use `choices`: class `OneChoice`
+        after kicking off the `cards_out`,
+        we want the remaining as a `choice` with the largest value
+        """
         def wang_zha():
-            if 'x' in self.other_cards and 'X' in self.other_cards: return None
-            
+            return ('x' in self.other_cards and 'X' in self.other_cards)
+
+        # 单牌
         def dan_pai():
             if  len(self.other_cards)==1:
                 choices=self.possible_choice[1] 
@@ -552,7 +444,7 @@ class AI_agent(Agent):
                         self.possible_choice=get_legal_choices(self.mycards)
                         return act
                 return None
-            
+        # duizi
         def two():
             if len(self.other_cards)==2:
                 if self.other_cards[0]==self.other_cards[1]:
@@ -572,7 +464,7 @@ class AI_agent(Agent):
                             self.possible_choice=get_legal_choices(self.mycards)
                             return act
                     return None
-        
+        # three same
         def three():
             if len(self.other_cards)==3:
                 if self.other_cards[0]==self.other_cards[1] and self.other_cards[0]==self.other_cards[2]:
@@ -691,7 +583,8 @@ class AI_agent(Agent):
                             
                             return act
                 return None
-            
+        
+        # 3+1
         def three_plus_one():
             if len(self.other_cards)==4:
                 other_cards=pai_to_number(self.other_cards)
@@ -712,13 +605,14 @@ class AI_agent(Agent):
                             self.possible_choice=get_legal_choices(self.mycards)   
                             return act
                     return None
-                
+        
+        # 3+2
         def three_plus_two():
             if len(self.other_cards)==5:
                 other_cards=pai_to_number(self.other_cards)
                 #出现频率最高的一个数的频率为3，次高为2
                 max_f=Counter(other_cards).most_common(1)[0][1]
-                most_number==Counter(other_cards).most_common(1)[0][0]
+                most_number=Counter(other_cards).most_common(1)[0][0]
                 while most_number in other_cards:
                     other_cards.remove(most_number)
                 min_f=Counter(other_cards).most_common(1)[0][1]
@@ -739,6 +633,7 @@ class AI_agent(Agent):
                             return act
                     return None
 
+        
         def bomb():
             if len(self.other_cards)==4:
                 if all(item ==self.other_cards[0] for item in self.other_cards):
@@ -759,14 +654,13 @@ class AI_agent(Agent):
                             return act
                     return None
           
-
-        # we can freely decide to output which cards.
+        # active carding: we can freely decide to output which cards.
         if gamestate.last_turn==self.name:
-            #func=[dan_pai,two,three,three_plus_one,three_plus_two,dan_lian,er_lian,san_lian]
-            #self.other_cards=[-1]
-            #we_action=dan_pai()
+            # func=[dan_pai,two,three,three_plus_one,three_plus_two,dan_lian,er_lian,san_lian]
+            # self.other_cards=[-1]
+            # we_action=dan_pai()
             rand_num=random.randint(1,9)
-            print(self.possible_choice)
+            print("possible choices for %s: "%self.name, self.possible_choice)
             if self.possible_choice[rand_num] !=[]:
               we_action=self.possible_choice[rand_num][0]
             else:
@@ -785,8 +679,8 @@ class AI_agent(Agent):
                 self.mycards.remove(we_action[i])
             return we_action
         else:
-            we_action=wang_zha()
-            if  we_action is not None: return we_action
+            # passively carding
+            if  wang_zha(): return None
             
             we_action=dan_pai()
             if  we_action is not None: return we_action
@@ -815,5 +709,7 @@ class AI_agent(Agent):
             we_action=bomb()
             if  we_action is not None: return we_action
             return None
-            
-        
+
+    def setChoiceFromCardsDic(self, dic_cards):
+        choice=OneChoice()
+

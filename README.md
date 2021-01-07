@@ -43,3 +43,4 @@ some necessary class and function of the GameState
 8. san_lian         ['a','a','a','b','b','b']
 9. bomb:            ['a','a','a','a']
 10. king bomb:      ['x','X']
+* 6\7\8 are `shun_zi`, which we don't have a strict constraint, so please be nice to ai.
