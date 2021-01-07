@@ -1,9 +1,5 @@
-import time
-import os
-import traceback
-import sys
-import inspect
 from collections import Counter
+from util import raiseNotDefined
 
 class Agent:
     """
@@ -223,18 +219,6 @@ class HumanAgent(Agent):
         #         return True
         # # invalid format
         # return False
-
-
-######################## helper function ##############################
-
-def raiseNotDefined():
-    fileName = inspect.stack()[1][1]
-    line = inspect.stack()[1][2]
-    method = inspect.stack()[1][3]
-
-    print("*** Method not implemented: %s at line %s of %s" %
-          (method, line, fileName))
-    sys.exit(1)
 
 
 
