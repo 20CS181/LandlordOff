@@ -6,34 +6,34 @@ import random
 class OneChoice:
     """
     One possible choice.
-    a partition of a series of cards
+    a partition of a series of card types
     """
     def __init__(self):
+        # 0~9:10 num_of_type
         self.num_of_wangzha=0
         self.num_of_danzhang=0
         self.num_of_duizi=0
         self.num_of_sanzhang=0
-        self.num_of_shunzi=0 # what is shunzi???????
-        self.num_of_liandui=0
-        self.num_of_feiji=0
+        self.num_of_shunzi=0    # dan_lian
+        self.num_of_liandui=0   # er_lian
+        self.num_of_feiji=0     # san_lian
+        self.num_of_san_dai_yi=0# 3+1
+        self.num_of_san_dai_er=0# 3+2
         self.num_of_bomb=0
-        self.num_of_san_dai_yi=0
-        self.num_of_san_dai_er=0
-        self.num_of_feiji_dai_yi=0
-        self.num_of_feiji_dai_er=0
 
+        # 0~9: 10 list_of_type
+        self.list_of_wangzha=[]
         self.list_of_danzhang=[]
         self.list_of_duizi=[]
         self.list_of_sanzhang=[]
         self.list_of_shunzi=[]
-        self.list_of_bomb=[]
-        self.list_of_feiji=[]
-        self.list_of_wangzha=[]
         self.list_of_liandui=[]
-        self.list_of_san_dai_yi=[]
-        self.list_of_san_dai_er=[]
-        self.list_of_feiji_dai_yi=[]
-        self.list_of_feiji_dai_er=[]
+        self.list_of_feiji=[]
+        self.list_of_3_plus_1=[]
+        self.list_of_3_plus_2=[]
+        self.list_of_bomb=[]
+
+        # other attributes
         self.total_times_to_finish=0
         self.value=0
 
@@ -67,7 +67,6 @@ def is_bomb(cards):
         if all(item ==cards[0] for item in cards):
             flag=True
     return flag
-
 def is_feiji(cards):
     #e.g., 333444, 555777
     flag=False
@@ -87,14 +86,12 @@ def is_feiji(cards):
 
     flag=True
     return flag
-
 def is_wangzha(cards):
     flag=False
     if len(cards)==2:
         if 'x' in cards and 'X' in cards:
             flag=True
     return flag
-
 def is_liandui(cards):
     flag=False
     cards=pai_to_number(cards)
@@ -116,7 +113,6 @@ def is_liandui(cards):
         flag=True
 
     return flag
-
 def find_duizi(mycards) :
     mycards= tranf_from_list_to_dic(mycards)
     for i in mycards.keys():

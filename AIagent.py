@@ -45,23 +45,24 @@ def get_legal_choices(cards):
         mycards= tranf_from_list_to_dic(cards)
         for i in range(10):
             possible_choice[i]=[]
-        #maintain possible_choices
-        #wang_zha
+        # maintain possible_choices
+        # wang_zha
             #nothing need to be done
-            
-        #danpai
+
+        # danpai
         for i in mycards.keys():
                    if mycards[i]>0:
                        possible_choice[1].append(i)
-        #two
+        # two same
         for i in mycards.keys():
                    if mycards[i]>1:
                        possible_choice[2].append(i)
-        #three
+        # three same
         for i in mycards.keys():
                    if mycards[i]>2:
                        possible_choice[3].append(i)
-        #dan_lian
+
+        # dan_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         for j in t:
@@ -71,7 +72,7 @@ def get_legal_choices(cards):
                     for i in range(count-4):
                        possible_choice[4].append(t[(t.index(j)-count+1+i):(t.index(j)+1)])
             else:  count=0               
-        #er_lian
+        # er_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         for j in t:
@@ -82,7 +83,7 @@ def get_legal_choices(cards):
                        tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
                        possible_choice[5].append(tep+tep)
             else:  count=0
-        #san_lian
+        # san_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         for j in t:
@@ -93,21 +94,21 @@ def get_legal_choices(cards):
                        tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
                        possible_choice[6].append(tep+tep+tep)
             else:  count=0
-        #three_plus_one
+        # three_plus_one
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
         for j in t:
             if mycards[j]>2:
                 for i in mycards.keys():
                     if i != j and mycards[i]>0:
                         possible_choice[7].append([j, j, j, i])
-        #three_plus_two
+        # three_plus_two
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
         for j in t:
             if mycards[j]>2:
                 for i in mycards.keys():
                     if i != j and mycards[i]>1:
                         possible_choice[8].append([j, j, j, i, i])
-        #bomb
+        # bomb
         for i in mycards.keys():
                    if mycards[i]>3:
                        possible_choice[9].append(i)
