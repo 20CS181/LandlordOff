@@ -1,12 +1,13 @@
 from collections import Counter
 from AIagent import *
+import copy
 import random
-
 
 class OneChoice:
     """
     One possible choice.
     a partition of a series of card types
+    use a dictionary and a list to represent the card partitions and each num
     """
     def __init__(self):
         # 0~9:10 num_of_type
@@ -20,10 +21,9 @@ class OneChoice:
         self.num_of_feiji=0     # 6: san_lian
         self.num_of_san_dai_yi=0# 7: 3+1
         self.num_of_san_dai_er=0# 8: 3+2
-        self.num_of_bomb=0      # 9 
+        self.num_of_bomb=0      # 9
         """
-        self.list_num_of_types = [0,0,0,0,0,0,0,0,0]
-        
+        self.list_num_of_types = [0, 0, 0, 0, 0, 0, 0, 0, 0,0]
 
         # 0~9: 10 list_of_type
         """
@@ -41,8 +41,24 @@ class OneChoice:
         self.dic_list_of_types = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[]}
 
         # other attributes
-        self.total_times_to_finish=0
+        self.total_times=0 # total num of card choices
         self.value=0  # choose the action with largest remaining value
+    
+    def getTypesDic(self):
+        """
+        return  the deepcopy of the current type dictionary
+        """
+        return copy.deepcopy(self.dic_list_of_types)
+
+    def update_types_with_dic(self, dic_of_type_list):
+        """
+        update `self.list_num_of_types`, `self.dic_list_of_types`
+        they are changed only here
+        """
+        self.dic_list_of_types = dic_of_type_list
+        for i in range(10):
+            self.list_num_of_types[i] = len(self.dic_list_of_types[i])
+
 
 def is_danzhang(cards):
     flag=False
@@ -120,6 +136,25 @@ def is_liandui(cards):
         flag=True
 
     return flag
+def is_sandaiyi(cards):
+    if len(cards)==4:
+        other_cards=pai_to_number(cards)
+        #出现频率最高的一个数的频率为3，次高为2
+        max_f=Counter(other_cards).most_common(1)[0][1]
+        return  max_f==3
+    return False
+def is_sandaier(cards):
+    if len(cards)==5:
+        other_cards=pai_to_number(cards)
+        #出现频率最高的一个数的频率为3，次高为2
+        max_f=Counter(other_cards).most_common(1)[0][1]
+        most_number=Counter(other_cards).most_common(1)[0][0]
+        while most_number in other_cards:
+            other_cards.remove(most_number)
+        min_f=Counter(other_cards).most_common(1)[0][1]
+        return  max_f==3 and min_f==2
+    return False
+
 def find_duizi(mycards) :
     mycards= tranf_from_list_to_dic(mycards)
     for i in mycards.keys():
@@ -154,7 +189,6 @@ def find_bomb(mycards) :
             return i
     return False
 
-
 def find_feiji(mycards):
     if find_sanzhang(mycards) :
         ans=[]
@@ -184,236 +218,118 @@ def find_liandui(mycards):
         else:  count=0          
     return ans
 
-def chai_pai(mycards, possible_choice):
-    """
-    第一步，将手牌拆成不可带牌的套牌。即排除：三带一、三带二、四带两单、四带两对、飞机带单张、飞机带对子这6种牌型。
-    第二步，对每一种拆法计算带牌后的套牌。将三张、飞机、炸弹与单张、对子进行组合，分析出包括带牌在内的所有套牌。
-    拆牌逻辑的输入：手牌的一维数组
-    拆牌逻辑的输出：套牌的二维数组，n种拆法（一维），每种拆法包括m个套牌（二维）
-    """
-    #FIRST STEP
-    #danzhang      
-    if len(possible_choice)==0 :
-        danpai=OneChoice()
-        danpai.num_of_danzhang+=1
-        danpai.total_times_to_finish+=1
-        danpai.list_of_danzhang.append(mycards[0])
-        possible_choice.append(danpai)
-    else :
-        possible_choice[-1].num_of_danzhang+=1
-        possible_choice[-1].total_times_to_finish+=1
-        possible_choice[-1].list_of_danzhang.append(mycards[0])
-    mycards.remove(mycards[0])
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-
-    #duizi  
-    if find_duizi(mycards) :
-        i=find_duizi(mycards)
-        if len(possible_choice)==0 :
-            duizi=OneChoice()
-            duizi.num_of_duizi+=1
-            duizi.total_times_to_finish+=1
-            duizi.list_of_duizi.append(i)
-        else :
-            possible_choice[-1].num_of_duizi+=1
-            possible_choice[-1].total_times_to_finish+=1
-            possible_choice[-1].list_of_duizi.append(i)
-    mycards.remove(i)
-    mycards.remove(i)
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-
-    #sanzhang
-    if find_sanzhang(mycards) :
-        i=find_sanzhang(mycards)
-        if len(possible_choice)==0 :
-            sanzhang=OneChoice()
-            sanzhang.num_of_sanzhang+=1
-            sanzhang.total_times_to_finish+=1
-            sanzhang.list_of_sanzhang.append(i)
-        else :
-            possible_choice[-1].num_of_sanzhang+=1
-            possible_choice[-1].total_times_to_finish+=1
-            possible_choice[-1].list_of_sanzhang.append(i)
-    for j in range(3) :
-        mycards.remove(i)
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-
-    #shunzi                    1
-    if len(find_shunzi(mycards)) !=0 :
-        
-        i=find_shunzi(mycards)
-        if len(possible_choice)==0 :
-            shunzi=OneChoice()
-            shunzi.num_of_shunzi+=1
-            shunzi.total_times_to_finish+=1
-            shunzi.list_of_shunzi.append(i)
-        else :
-            possible_choice[-1].num_of_shunzi+=1
-            possible_choice[-1].total_times_to_finish+=1
-            possible_choice[-1].list_of_shunzi.append(i)
- 
-    mycards.remove(i)
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-
-    #bomb
-    if find_bomb(mycards) :
-        i=find_bomb(mycards)
-        if len(possible_choice)==0 :
-            bomb=OneChoice()
-            bomb.num_of_sanzhang+=1
-            bomb.total_times_to_finish+=1
-            bomb.list_of_bomb.append(i)
-        else :
-            possible_choice[-1].num_of_bomb+=1
-            possible_choice[-1].total_times_to_finish+=1
-            possible_choice[-1].list_of_bomb.append(i)
-    for j in range(4) :
-        mycards.remove(i)
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-
-    #feiji
-    if find_feiji(mycards) :
-        ans=[]
-        ans=find_feiji(mycards)
-        if len(possible_choice)==0 :
-            feiji=OneChoice()
-            feiji.num_of_feiji+=1
-            feiji.total_times_to_finish+=1
-            feiji.list_of_feiji.append(ans)
-        else :
-            possible_choice[-1].num_of_feiji+=1
-            possible_choice[-1].total_times_to_finish+=1
-            possible_choice[-1].list_of_feiji.append(ans)
-    for j in range(3) :
-        mycards.remove(ans[0])
-        mycards.remove(ans[-1])
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-    #wangzha
-    if find_wangzha(mycards) :
-        if len(possible_choice)==0 :
-            wangzha=OneChoice()
-            wangzha.num_of_wangzha+=1
-            wangzha.total_times_to_finish+=1
-            wangzha.list_of_wangzha.append('x')
-            wangzha.list_of_wangzha.append('X')
-        else :
-            possible_choice[-1].num_of_wangzha+=1
-            possible_choice[-1].total_times_to_finish+=1
-            possible_choice[-1].list_of_wangzha.append('x')
-            possible_choice[-1].list_of_wangzha.append('X')
-    mycards.remove('x')
-    mycards.remove('X')
-    if len(mycards)==0 :
-        return
-    else :
-        return chai_pai(mycards, possible_choice)
-
-    #liandui                           2
-    if len(find_liandui(mycards)) !=0 :
-        return False
-
-def choice_daipai(beidai,dpNum,one_possible_choice,possible_choice):
-    """
-    递归结束逻辑：所有可带牌套牌都已匹配到被带牌
-    递归范围减少：每匹配好一组可带牌+被带牌，就其从待匹配可带牌套牌和待匹配被带牌的列表中删除，并生成匹配好的新套牌
-    递归返回结果：在递归过程中记录，在递归结束时返回所有匹配好的新套牌。
-    """
-    for j in range(dpNum) :  #选j个套牌去带牌
-        if j > beidai :
-            return
-        if dpNum==0 :
-            return
-        else :
-            if one_possible_choice.num_of_danzhang !=0 :   #带1
-                newone=OneChoice()
-                if one_possible_choice.num_of_sanzhang !=0:  #3+1
-                    newone.num_of_san_dai_yi+=1
-                    newone.list_of_san_dai_yi.append([one_possible_choice.list_of_sanzhang[0],one_possible_choice.list_of_danzhang[0]])
-                    one_possible_choice.num_of_danzhang-=1
-                    one_possible_choice.list_of_danzhang.remove(0)
-                    one_possible_choice.num_of_sanzhang-=1
-                    one_possible_choice.list_of_sanzhang.remove(0)
-                #if one_possible_choice.num_of_bomb !=0:    4+1？
-
-                if one_possible_choice.num_of_feiji!=0:    # 3 555666 7
-                    if one_possible_choice.num_of_danzhang>=2 :
-                        newone.num_of_feiji_dai_yi+=1
-                        newone.list_of_san_dai_yi.append([ one_possible_choice.list_of_feiji[0], one_possible_choice.list_of_danzhang[0:2] ])
-                        one_possible_choice.num_of_danzhang-=2
-                        one_possible_choice.list_of_danzhang=one_possible_choice.list_of_danzhang[2:]
-                        one_possible_choice.num_of_feiji-=1
-                        one_possible_choice.list_of_feiji.remove(0)
-                newone.total_times_to_finish+=1
-                possible_choice.append(newone)
-
-            if one_possible_choice.num_of_duizi !=0 :   #带2
-                newone=OneChoice()
-                if one_possible_choice.num_of_sanzhang !=0:  #3+2
-                    newone.num_of_san_dai_er+=1
-                    newone.list_of_san_dai_er.append([one_possible_choice.list_of_sanzhang[0],one_possible_choice.list_of_duizi[0]])
-                    one_possible_choice.num_of_duizi-=1
-                    one_possible_choice.list_of_duizi.remove(0)
-                    one_possible_choice.num_of_sanzhang-=1
-                    one_possible_choice.list_of_sanzhang.remove(0)
-                #if one_possible_choice.num_of_bomb !=0:    4+2？
-
-                if one_possible_choice.num_of_feiji!=0:    # 33 555666 77
-                    if one_possible_choice.num_of_duizi>=2 :
-                        newone.num_of_feiji_dai_er+=1
-                        newone.list_of_san_dai_er.append([ one_possible_choice.list_of_feiji[0], one_possible_choice.list_of_duizi[0:2] ])
-                        one_possible_choice.num_of_duizi-=2
-                        one_possible_choice.list_of_duizi=one_possible_choice.list_of_duizi[2:]
-                        one_possible_choice.num_of_feiji-=1
-                        one_possible_choice.list_of_feiji.remove(0)
-                newone.total_times_to_finish+=1
-                possible_choice.append(newone)
-            
-            dpNum-=1
-            beidai-=1
-            return choice_daipai(beidai,dpNum,one_possible_choice,possible_choice)
-
-            
-def chai_pai_second(possible_choice) :
-    #SECOND STEP
-    """
-    1、查看拆牌结果中套牌是否包括：三张、炸弹和飞机，并且有可以被带的套牌：单张和对子。如果没有可带牌或被带牌直接返回。否则，进行下一步。
-    2、计算可带牌套牌的数量为（dpNum），从1遍历到dpNum，求出每种可带牌数量下的所有带牌组合。
-    """
-    for i in range(len(possible_choice)) :
-        beidai=possible_choice[i].num_of_danzhang+possible_choice[i].num_of_duizi
-        dpNum=possible_choice[i].num_of_sanzhang+possible_choice[i].num_of_bomb+possible_choice[i].num_of_feiji
-        if dpNum==0 or beidai==0 :
-            return
-        else:
-            choice_daipai(beidai,dpNum,possible_choice[i],possible_choice)
-
-
-
-def get_value(A_choice):
+# recursively 
+def get_one_step_value(cards):
+    cards=pai_to_number(cards) # if need
+    cards.sort()
+    if is_danzhang(cards):
+        return cards[-1]  
+    if is_duizi(cards):
+        return cards[-1]  
+    if is_sanzhang(cards):
+        return cards[-1]
+    if is_shunzi(cards):
+        return cards[-1]+1
+    if is_liandui(cards):
+        return cards[-1]+1
+    if is_feiji(cards):
+        return (cards[-1]+8)//2
+    if is_sandaiyi(cards):
+        if cards[0]==cards[1]:
+          return cards[0]+7
+        else: 
+          return cards[-1]+7
+    if is_sandaier(cards):
+        if cards[0]==cards[2]:
+          return cards[0]+7
+        else: 
+          return cards[-1]+7
+    if is_bomb(cards):
+        return cards[-1]+14
+    if is_wangzha(cards):
+        return 30 
     return 0
 
 
+def copy_OneChoice(choice):
+    copy_choice = OneChoice()
+    # updtae dic and list
+    copy_choice.update_types_with_dic(choice.getTypesDic())
+    # update other two attributes
+    copy_choice.total_times = choice.total_times
+    copy_choice.value = choice.value
+
+    return copy_choice
+
+
+def get_value(cards, possible_choices_list):
+    """
+    input: list of cards,  
+    output:value 
+    """
+    possible_choices=[]
+    all_possible_dic = get_legal_choices(cards)
+    
+    for card_type in all_possible_dic.keys():
+        for cards_out in all_possible_dic[card_type]:
+            # make 2 copies
+            # card = deepcopy of cards
+            
+            card = copy.deepcopy(cards)
+            print("before",card)
+            print("before",cards)
+            for one_card in cards_out:
+               card.remove(one_card)
+            print("after",card)
+            print("after",cards)
+            # choices_list = deepcopy of possible_choices_list
+            choices_list = []
+            for i in possible_choices_list:
+                choices_list.append(copy_OneChoice(i))
+            # first turn
+            if possible_choices_list == []:
+                ch = OneChoice()
+                ch.list_num_of_types[card_type]=1
+                ch.dic_list_of_types[card_type].append(cards_out)
+                ch.total_times = 1
+                ch.value = get_one_step_value(cards_out)
+
+                choices_list.append(ch)
+            else:   
+            # traverse choices_list
+                for possible_choice in choices_list:
+                    possible_choice.list_num_of_types[card_type]=possible_choice.list_num_of_types[card_type]+1
+                    possible_choice.dic_list_of_types[card_type].append(cards_out)
+                    possible_choice.value=possible_choice.value+get_one_step_value(cards_out)
+                    possible_choice.total_times=possible_choice.total_times+1
+                    if  possible_choice.total_times>7: return []
+            if card !=[]: 
+                possible_choices=possible_choices+get_value(card,choices_list)
+    return  possible_choices
+
+def get_tvTuple_from_list(possible_choices_list):
+    # min times
+    times = 20
+    for choice in possible_choice_list:
+        if choice.total_times < times:
+            times = choice.total_times
+    mint_list = []
+    for choice in possible_choice_list:
+        if choice.total_times == times:
+            mint_list.append(choice)
+    # max value
+    value = 0
+    for choice in mint_list:
+        if choice.value > value:
+            value = choice.value
+    return (times, value)
+
+        
 class SearchAgent(AI_agent):
-    def get_action(self, gamestate, choice):
+    def get_action(self, gamestate):
         """ judge the cards of others
+        imput `choice`: class `OneChoice` of my current cards
+
         for active: random choose an available one
         for passive: try to follow the others under the rule
         if quit, return None.
@@ -423,70 +339,21 @@ class SearchAgent(AI_agent):
         we want the remaining as a `choice` with the largest value
         """
         def wang_zha():
-            return ('x' in self.other_cards and 'X' in self.other_cards)
+            return (self.other_cards == ['x', 'X'])
 
         # 单牌
         def dan_pai():
-            if  len(self.other_cards)==1:
-                choices=self.possible_choice[1] 
-                if choices==[]:return None
-                
-                choices=pai_to_number(choices)
-
-                if self.other_cards != [-1]:
-                   other_cards=pai_to_number(self.other_cards)
-                else:
-                   other_cards=[-1]
-                choices.sort()
-                for i in range(len(choices)):
-                    if choices[i] > other_cards[0] :
-                        choices=number_to_pai(choices)
-                        act=[choices[i]]
-                        #delete
-                        self.mycards.remove(choices[i])
-                        self.possible_choice=get_legal_choices(self.mycards)
-                        return act
-                return None
+            return len(self.other_cards)==1
         # duizi
         def two():
             if len(self.other_cards)==2:
-                if self.other_cards[0]==self.other_cards[1]:
-                    choices=self.possible_choice[2]
-                    if choices==[]:return None
-                    
-                    choices=pai_to_number(choices)
-                    other_cards=pai_to_number(self.other_cards)
-                    choices.sort()
-                    for i in range(len(choices)):
-                        if choices[i] > other_cards[0] :
-                            choices=number_to_pai(choices)
-                            act=[choices[i],choices[i]]
-                            #delete
-                            for j in range(2) :
-                                self.mycards.remove(act[j])
-                            self.possible_choice=get_legal_choices(self.mycards)
-                            return act
-                    return None
+                return self.other_cards[0]==self.other_cards[1]
+            return False
         # three same
         def three():
             if len(self.other_cards)==3:
-                if self.other_cards[0]==self.other_cards[1] and self.other_cards[0]==self.other_cards[2]:
-                    choices=self.possible_choice[3]
-                    if choices==[]:return None
-                    
-                    choices=pai_to_number(choices)
-                    other_cards=pai_to_number(self.other_cards)
-                    choices.sort()
-                    for i in range(len(choices)):
-                        if choices[i] > other_cards[0] :
-                            choices=number_to_pai(choices)
-                            act=[choices[i],choices[i],choices[i]]
-                            for j in range(3) :
-                                self.mycards.remove(act[j])
-                            self.possible_choice=get_legal_choices(self.mycards)
-                            return act
-                    return None
-                
+                return self.other_cards[0]==self.other_cards[1]==self.other_cards[2]
+            return False
         # 3,4,5,...
         def dan_lian():
             other_cards=pai_to_number(self.other_cards)
@@ -510,7 +377,6 @@ class SearchAgent(AI_agent):
                             
                             return act
                 return None
-
         #33,44,55,...
         def er_lian():
             other_cards=pai_to_number(self.other_cards)
@@ -548,14 +414,13 @@ class SearchAgent(AI_agent):
                                     
                             return act
                 return None
-
         #333,444,555,...
         def san_lian():
             other_cards=pai_to_number(self.other_cards)
             other_cards.sort()
             length_other=len(other_cards)
             if length_other <6 :return None
-            #每个值频率为3
+            # 每个值频率为3
             dict = {}
             for key in other_cards:
                 dict[key] = dict.get(key, 0) + 1
@@ -578,7 +443,7 @@ class SearchAgent(AI_agent):
                         if choices[i][0] >other_cards[0] :
                             act=choices[i]
                             act=number_to_pai(act)
-                            
+
                             #delete
                             for j in range(len(act)) :
                                 self.mycards.remove(act[j])
@@ -587,132 +452,60 @@ class SearchAgent(AI_agent):
                             return act
                 return None
         
-        # 3+1
-        def three_plus_one():
-            if len(self.other_cards)==4:
-                other_cards=pai_to_number(self.other_cards)
-                #出现频率最高的一个数的频率为3
-                if  Counter(other_cards).most_common(1)[0][1]==3 :
-                    choices=self.possible_choice[7]
-                    if choices==[]:return None
-
-                    for i in range(len(choices)):
-                        choices[i]=pai_to_number(choices[i])
-                        three=Counter(choices[i]).most_common(1)[0][0]
-                        if three > Counter(other_cards).most_common(1)[0][0] :
-                            choices[i]=number_to_pai(choices[i])
-                            act=choices[i]
-                            #delete
-                            for j in range(4) :
-                                self.mycards.remove(act[j])
-                            self.possible_choice=get_legal_choices(self.mycards)   
-                            return act
-                    return None
-        
-        # 3+2
-        def three_plus_two():
-            if len(self.other_cards)==5:
-                other_cards=pai_to_number(self.other_cards)
-                #出现频率最高的一个数的频率为3，次高为2
-                max_f=Counter(other_cards).most_common(1)[0][1]
-                most_number=Counter(other_cards).most_common(1)[0][0]
-                while most_number in other_cards:
-                    other_cards.remove(most_number)
-                min_f=Counter(other_cards).most_common(1)[0][1]
-                if  max_f==3 and min_f==2 :
-                    choices=self.possible_choice[8]
-                    if choices==[]:return None
-
-                    for i in range(len(choices)):
-                        choices[i]=pai_to_number(choices[i])
-                        three=Counter(choices[i]).most_common(1)[0][0]
-                        if three > most_number :
-                            choices[i]=number_to_pai(choices[i])
-                            act=choices[i]
-                            #delete
-                            for j in range(5) :
-                                self.mycards.remove(act[j])
-                            self.possible_choice=get_legal_choices(self.mycards)   
-                            return act
-                    return None
-
-        
         def bomb():
             if len(self.other_cards)==4:
-                if all(item ==self.other_cards[0] for item in self.other_cards):
-                    choices=self.possible_choice[9]
-                    if choices==[]:return None
-                    
-                    choices=pai_to_number(choices)
-                    other_cards=pai_to_number(self.other_cards)
-                    choices.sort()
-                    for i in range(len(choices)):
-                        if choices[i] > other_cards[0] :
-                            choices=number_to_pai(choices)
-                            act=[choices[i],choices[i],choices[i],choices[i]]
-                            #delete
-                            for j in range(4) :
-                                self.mycards.remove(act[j])
-                            self.possible_choice=get_legal_choices(self.mycards)   
-                            return act
-                    return None
-          
-        # active carding: we can freely decide to output which cards.
-        if gamestate.last_turn==self.name:
-            # func=[dan_pai,two,three,three_plus_one,three_plus_two,dan_lian,er_lian,san_lian]
-            # self.other_cards=[-1]
-            # we_action=dan_pai()
-            rand_num=random.randint(1,9)
-            print("possible choices for %s: "%self.name, self.possible_choice)
-            if self.possible_choice[rand_num] !=[]:
-              we_action=self.possible_choice[rand_num][0]
-            else:
-              we_action=None
-            while we_action is None : 
-                rand_num=random.randint(1,9)
-                if self.possible_choice[rand_num] !=[]:
-                    we_action=self.possible_choice[rand_num][0]
-                else:
-                    we_action=None
-            if rand_num==2:
-                we_action=[we_action]+[we_action]
-            if rand_num==3:
-                we_action=[we_action]+[we_action]+[we_action]
-            for i in range(len(we_action)):
-                self.mycards.remove(we_action[i])
-            return we_action
-        else:
-            # passively carding
-            if  wang_zha(): return None
-            
-            we_action=dan_pai()
-            if  we_action is not None: return we_action
-            
-            we_action=two()
-            if  we_action is not None: return we_action
-            
-            we_action=three()
-            if  we_action is not None: return we_action
-            
-            we_action=dan_lian()
-            if  we_action is not None: return we_action
-            
-            we_action=er_lian()
-            if  we_action is not None: return we_action
-            
-            we_action=san_lian()
-            if  we_action is not None: return we_action
-            
-            we_action=three_plus_one()
-            if  we_action is not None: return we_action
-            
-            we_action=three_plus_two()
-            if  we_action is not None: return we_action
-            
-            we_action=bomb()
-            if  we_action is not None: return we_action
-            return None
+                return all(item ==self.other_cards[0] for item in self.other_cards)
+            return False
 
-    def setChoiceFromCardsDic(self, dic_cards):
-        choice=OneChoice()
+        # the avialable types of your cards_out
+        available_types = [i for i in range(10)]
+
+        # if passive, the only available type is the last person
+        if (self.name!=gamestate.last_turn):
+            if  wang_zha():                        return None
+            def passive_type():
+                if dan_pai() :                     return 1
+                if two() :                         return 2
+                if three() :                       return 3
+                if dan_lian() is not None:         return 4
+                if er_lian() is not None:          return 5
+                if san_lian() is not None:         return 6
+                if is_sandaiyi(self.other_cards):  return 7
+                if is_sandaier(self.other_cards):  return 8
+                if bomb():                         return 9
+                return None
+            available_types = passive_type()
+
+        # traverse all actions and compute the remaining value
+        tv_pairs = []          # (action, remain_min_times, remain_max_value)
+        for i in available_types:
+            # i: index
+            if len(self.possible_choice[i])!=0:
+                for action in self.possible_choice[i]:
+                    # the remaining
+                    rem_cards = copy.deepcopy(self.cards)
+                    rem_cards.remove(action)
+                   
+                    min_times, max_value = get_tvTuple_from_list(get_value(rem_cards, []))
+                    tv_pair = (action, min_times, max_value)
+                    tv_pairs.append(tv_pair)
+        # return the action
+        # min times
+        times = 20
+        for atv in tv_pairs:
+            if  atv[1] < times:
+                times =  atv[1]
+        mint_list = []
+        for atv in tv_pairs:
+            if  atv[1] == times:
+                mint_list.append(atv)
+        # max value
+        value = 0
+        for atv in mint_list:
+            if atv[2] > value:
+                value = atv[2]
+        for atv in mint_list:
+            if atv[2] == value:
+                return atv[0]
+
 

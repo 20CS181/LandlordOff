@@ -155,7 +155,7 @@ class AI_agent(Agent):
         for passive: try to follow the others under the rule
         """
         def wang_zha():
-            return ('x' in self.other_cards and 'X' in self.other_cards)
+            return (self.other_cards == ['x', 'X'])
 
         # 单牌
         def dan_pai():

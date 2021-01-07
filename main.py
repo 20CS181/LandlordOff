@@ -1,5 +1,5 @@
 from game import *
-
+from SearchAgent import *
 # main process:
 ###############################################################################
 #type in the user name
@@ -13,9 +13,9 @@ player3 = input("Your are player 2, please type in your player name: ")
 # init three players
 game=GameState(player1, player2, player3)
 card_dic = game.Card_dic()
-P1 = AI_agent(player1, card_dic[player1], True)
-P2 = AI_agent(player2, card_dic[player2], False)
-P3 = AI_agent(player3, card_dic[player3], False)
+P1 = SearchAgent(player1, card_dic[player1], True)
+P2 = HumanAgent(player2, card_dic[player2], False)
+P3 = HumanAgent(player3, card_dic[player3], False)
 
 """ 
 play the game, whose_turn indicates the player to play:
