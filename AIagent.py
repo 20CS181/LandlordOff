@@ -26,7 +26,6 @@ def tranf_from_dic_to_list(card_dic):
            l.append(i)
     return l
 
-
 def get_legal_choices(cards):
         """ return a dictionary: {
             0:[]
@@ -78,7 +77,7 @@ def get_legal_choices(cards):
                     for i in range(count-2):
                        tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
                        possible_choice[5].append(tep+tep)
-            else:  count=0           
+            else:  count=0
         #san_lian
         count=0
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -89,7 +88,7 @@ def get_legal_choices(cards):
                     for i in range(count-1):
                        tep=t[(t.index(j)-count+1+i):(t.index(j)+1)]
                        possible_choice[6].append(tep+tep+tep)
-            else:  count=0                 
+            else:  count=0
         #three_plus_one
         t=['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K','A', '2']
         for j in t:
@@ -103,7 +102,7 @@ def get_legal_choices(cards):
             if mycards[j]>2:
                 for i in mycards.keys():
                     if i != j and mycards[i]>1:
-                        possible_choice[8].append([j,j,j,i,i])     
+                        possible_choice[8].append([j, j, j, i, i])
         #bomb
         for i in mycards.keys():
                    if mycards[i]>3:
@@ -441,5 +440,3 @@ class AI_agent(Agent):
             we_action=bomb()
             if  we_action is not None: return we_action
             return None
-            
-        

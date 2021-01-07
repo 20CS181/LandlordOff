@@ -149,7 +149,7 @@ class HumanAgent(Agent):
 
         # three same
         if len(cards_mine)==3:
-            if (cards_mine[0]==cards_mine[1]==cards_last[2]):
+            if (cards_mine[0]==cards_mine[1]==cards_mine[2]):
                 if is_active: 
                     return True
                 elif len(cards_last)==3 and (cards_last[0]==cards_last[1]==cards_last[2]) and priority[cards_mine[0]] > priority[cards_last[0]]: 
@@ -186,9 +186,10 @@ class HumanAgent(Agent):
                 else: 
                     return False
 
-        # lian  shun_zi
+        # lian shun_zi
         # remove redundency
         same_frequent = myCardsCounter.most_common(1)[0][1]
+        if same_frequent == 1: return True
         for key in myCardsCounter.keys():
             if myCardsCounter[key]!=same_frequent:
                 return False

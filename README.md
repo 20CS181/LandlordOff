@@ -21,7 +21,7 @@ claim `class Agent`, `class HumanAgent`.
 (`utils.py`, `play.py`用来测试`HumanAgent`)
 
 ### in `AIagent.py`:
-random puts cards
+A normal AI_agent randomly puts cards
 
 ## Game playing
 ### in `main.py`:
