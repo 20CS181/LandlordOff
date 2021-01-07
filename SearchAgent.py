@@ -10,32 +10,39 @@ class OneChoice:
     """
     def __init__(self):
         # 0~9:10 num_of_type
-        self.num_of_wangzha=0
-        self.num_of_danzhang=0
-        self.num_of_duizi=0
-        self.num_of_sanzhang=0
-        self.num_of_shunzi=0    # dan_lian
-        self.num_of_liandui=0   # er_lian
-        self.num_of_feiji=0     # san_lian
-        self.num_of_san_dai_yi=0# 3+1
-        self.num_of_san_dai_er=0# 3+2
-        self.num_of_bomb=0
+        """
+        self.num_of_wangzha=0   # 0
+        self.num_of_danzhang=0  # 1
+        self.num_of_duizi=0     # 2
+        self.num_of_sanzhang=0  # 3
+        self.num_of_shunzi=0    # 4: dan_lian
+        self.num_of_liandui=0   # 5: er_lian
+        self.num_of_feiji=0     # 6: san_lian
+        self.num_of_san_dai_yi=0# 7: 3+1
+        self.num_of_san_dai_er=0# 8: 3+2
+        self.num_of_bomb=0      # 9 
+        """
+        self.list_num_of_types = [0,0,0,0,0,0,0,0,0]
+        
 
         # 0~9: 10 list_of_type
-        self.list_of_wangzha=[]
-        self.list_of_danzhang=[]
-        self.list_of_duizi=[]
-        self.list_of_sanzhang=[]
-        self.list_of_shunzi=[]
-        self.list_of_liandui=[]
-        self.list_of_feiji=[]
-        self.list_of_3_plus_1=[]
-        self.list_of_3_plus_2=[]
-        self.list_of_bomb=[]
+        """
+        self.list_of_wangzha=[] # 0
+        self.list_of_danzhang=[]# 1
+        self.list_of_duizi=[]   # 2
+        self.list_of_sanzhang=[]# 3
+        self.list_of_shunzi=[]  # 4
+        self.list_of_liandui=[] # 5
+        self.list_of_feiji=[]   # 6
+        self.list_of_3_plus_1=[]# 7
+        self.list_of_3_plus_2=[]# 8
+        self.list_of_bomb=[]    # 9 
+        """
+        self.dic_list_of_types = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[]}
 
         # other attributes
         self.total_times_to_finish=0
-        self.value=0
+        self.value=0  # choose the action with largest remaining value
 
 def is_danzhang(cards):
     flag=False
@@ -405,7 +412,7 @@ def get_value(A_choice):
 
 
 class SearchAgent(AI_agent):
-    def get_action(self, gamestate):
+    def get_action(self, gamestate, choice):
         """ judge the cards of others
         for active: random choose an available one
         for passive: try to follow the others under the rule
