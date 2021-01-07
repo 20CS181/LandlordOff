@@ -1,7 +1,6 @@
 # land_lord_off
 For cs181 final project in Shanghaitech.
 
-
 ## References:
 ### 简书上的斗地主策略 https://www.jianshu.com/p/9fb001daedcf
 
@@ -30,3 +29,17 @@ the main process to play game.
 
 ### in `game.py`:
 some necessary class and function of the GameState
+
+## Play the Game
+* To play the game, run `main.py`.
+* For the rules, there are 10 legal card types:('a''b' in range(3, 10), 'x''X' are kings)
+1. dan_pai:         ['a']
+2. two same:        ['a','a']
+3. three same       ['a','a','a']
+4. three_plus_one   ['a','a','a','b']
+5. three_plus_two   ['a','a','a','b','b']
+6. dan_lian         ['a','b','c']
+7. er_lian          ['a','a','b','b']
+8. san_lian         ['a','a','a','b','b','b']
+9. bomb:            ['a','a','a','a']
+10. king bomb:      ['x','X']
