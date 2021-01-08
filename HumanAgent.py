@@ -27,12 +27,39 @@ class Agent:
         """
         raiseNotDefined()
     
+    def takeCertainAction(self, gameState, cards_out):
+        """ *just for gameTree, no exception check 
+        take an action at the current state
+        update `gameState.card_dic` and `gameState.colored_card_dic`"""
+        if cards_out != [] and cards_out!=None:
+            
+            # print("With ", gameState.card_dic[self.name])
+            # print("     ", gameState.colored_card_dic[self.name])
+            print(self.getName(),"try action", cards_out)
+            # update gameState
+            gameState.last_turn = self.name
+            gameState.cards_out = cards_out
+        
+            # remove cards in both card_dic
+            for card_out in cards_out:
+                if card_out in gameState.card_dic[self.name]:
+                    gameState.card_dic[self.name].remove(card_out)
+                else:
+                    print(card_out, " failed!")
+                # remove the cards in huase
+                for card in gameState.colored_card_dic[self.name]:
+                    if card[-1] == card_out[-1]:
+                        gameState.colored_card_dic[self.name].remove(card)
+                        break
+        return gameState.card_dic[self.name]
+
     def getAction(self, state):
         raiseNotDefined()
 
 
 class HumanAgent(Agent):
     def takeAction(self, state):
+        print("Human Player!")
         # active
         # to make sure you have the cards you hand out
         while True:
@@ -53,7 +80,7 @@ class HumanAgent(Agent):
             for card_out in cards_out:
                 find = False
                 for card in cur_cards :
-                    if (card[1:] == card_out) or (card == card_out):
+                    if (card[-1] == card_out[-1]):
                         cur_cards.remove(card)
                         find = True
                         break

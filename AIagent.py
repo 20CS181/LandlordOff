@@ -37,6 +37,8 @@ class AI_agent(Agent):
                         self.mycards_huase.remove(card)
                         break
             gamestate.colored_card_dic[self.name]=self.mycards_huase
+        else:
+            print("`PASS!`")
         # return the remaining cards
         return self.cards
 
@@ -305,7 +307,10 @@ class AI_agent(Agent):
             if rand_num==3:
                 we_action=[we_action]+[we_action]+[we_action]
             for i in range(len(we_action)):
-                self.mycards.remove(we_action[i])
+                if we_action[i] in self.mycards:
+                    self.mycards.remove(we_action[i])
+                else:
+                    print(we_action[i], "delete failed!, mycards: ", self.mycards)
             return we_action
         else:
             # passively put cards

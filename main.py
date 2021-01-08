@@ -1,5 +1,9 @@
-from game import *
+from gameData import *
+# from game import *
 from SearchAgent import *
+from MultiAgent import *
+from HumanAgent import HumanAgent
+
 # main process:
 ###############################################################################
 #type in the user name
@@ -11,11 +15,13 @@ player2 = input("Your are player 1, please type in your player name: ")
 player3 = input("Your are player 2, please type in your player name: ")
 
 # init three players
-game=GameState(player1, player2, player3)
+game=GameStateData(player1, player2, player3)
+game.begin(player1, player2, player3)
 card_dic = game.Card_dic()
-P1 = SearchAgent(player1, card_dic[player1], True)
-P2 = HumanAgent(player2, card_dic[player2], False)
-P3 = HumanAgent(player3, card_dic[player3], False)
+P1 = MinimaxAgent(player1, card_dic[player1], True)
+P2 = AI_agent(player2, card_dic[player2], False)
+P3 = AI_agent(player3, card_dic[player3], False)
+playerAgents.extend([P1, P2, P3])
 
 """ 
 play the game, whose_turn indicates the player to play:
@@ -23,10 +29,16 @@ play the game, whose_turn indicates the player to play:
 # Mr. Master goes first
 update(game, P1)
 os.system('cls')
-game.whose_turn=2
+# game.whose_turn=2
 
 while game.finish(P1, P2, P3) !=True:
+    print("card_dic:", game.card_dic)
+    print("colored_card_dic:", game.colored_card_dic)
+    print("P1: ", P1.cards)
+    print("P2: ", P2.cards)
+    print("P3: ", P3.cards)
     if game.whose_turn == 1:
+
         print(player1 + "!\nIs your turn to release cards.")
         os.system( 'pause' )
         if (game.last_turn==player1):
@@ -34,10 +46,11 @@ while game.finish(P1, P2, P3) !=True:
         else:
             print("last_turn is %s and puts out:"%(game.last_turn), game.cards_out)
         # game.see_card(player1)
-        update(game, P1, )
+        update(game, P1)
         os.system('cls')
-        game.whose_turn = 2
+
     elif game.whose_turn == 2:
+
         print(player2 + "!\nIs your turn to release cards.")
         os.system( 'pause' )
         if (game.last_turn==player2):
@@ -47,7 +60,7 @@ while game.finish(P1, P2, P3) !=True:
         game.see_card(player2)
         update(game, P2)
         os.system('cls')
-        game.whose_turn = 3
+
     else:
         print(player3 + "!\nIs your turn to release cards.")
         os.system( 'pause' )
@@ -59,7 +72,6 @@ while game.finish(P1, P2, P3) !=True:
         update(game, P3)
         os.system('cls')
 
-        game.whose_turn = 1
 
 winner = game.Winner()
 if winner == "Mr Master":
