@@ -28,8 +28,8 @@ class GameStateData(GameState):
         actions = []
         priority = {'3':0, '4':1, '5':2, '6':3, '7':4, '8':5, '9':6, '10':7, 'J':8, 'Q':9, 'K':10, 'A':11, '2':12, "x":13, "X":14}
         # not your turn
-        if self.whose_turn != playerNum+1:
-            return []
+        # if self.whose_turn != playerNum+1:
+        #     return []
         player = playerAgents[playerNum]
 
         # Collect legal moves and successor states
@@ -102,6 +102,6 @@ class GameStateData(GameState):
                     else:
                         actions.extend(all_choices[i])
 
-        print("legalMoves for %s: "%self.players[playerNum], actions)
+        # print("legalMoves for %s: "%self.players[playerNum], actions)
         
         return actions

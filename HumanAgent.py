@@ -35,7 +35,7 @@ class Agent:
             
             # print("With ", gameState.card_dic[self.name])
             # print("     ", gameState.colored_card_dic[self.name])
-            print(self.getName(),"try action", cards_out)
+            # print(self.getName(),"try action", cards_out)
             # update gameState
             gameState.last_turn = self.name
             gameState.cards_out = cards_out

@@ -18,7 +18,7 @@ player3 = input("Your are player 2, please type in your player name: ")
 game=GameStateData(player1, player2, player3)
 game.begin(player1, player2, player3)
 card_dic = game.Card_dic()
-P1 = MinimaxAgent(player1, card_dic[player1], True)
+P1 = AlphaBetaAgent(player1, card_dic[player1], True)
 P2 = AI_agent(player2, card_dic[player2], False)
 P3 = AI_agent(player3, card_dic[player3], False)
 playerAgents.extend([P1, P2, P3])
@@ -32,11 +32,11 @@ os.system('cls')
 # game.whose_turn=2
 
 while game.finish(P1, P2, P3) !=True:
-    print("card_dic:", game.card_dic)
-    print("colored_card_dic:", game.colored_card_dic)
-    print("P1: ", P1.cards)
-    print("P2: ", P2.cards)
-    print("P3: ", P3.cards)
+    # print("card_dic:", game.card_dic)
+    # print("colored_card_dic:", game.colored_card_dic)
+    # print("P1: ", P1.cards)
+    # print("P2: ", P2.cards)
+    # print("P3: ", P3.cards)
     if game.whose_turn == 1:
 
         print(player1 + "!\nIs your turn to release cards.")

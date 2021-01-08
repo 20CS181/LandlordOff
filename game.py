@@ -24,7 +24,7 @@ def card_sort(m_card_list):
 class GameState:
     def __init__(self, player1, player2, player3):
         # GameState attributes 
-        print("……………………………initializing……………………………")
+        # print("……………………………initializing……………………………")
         """ 
         P1: the AI_agent
         P2, P3: the humanAgent 

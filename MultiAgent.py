@@ -12,9 +12,9 @@ class MinimaxAgent(Agent):
     """
     def takeAction(self, gameState):
         print("MiniMax Lord!")
-        print("before: ", self.cards)
+        # print("before: ", self.cards)
         cards_out = self.getAction(gameState)
-        print("cards_out: ", cards_out)
+        # print("cards_out: ", cards_out)
 
         # take action
         if cards_out != [] and cards_out!= None:
@@ -32,7 +32,7 @@ class MinimaxAgent(Agent):
                         gameState.colored_card_dic[self.name].remove(card)
                         break
 
-        print("after: ",self.cards)
+        # print("after: ",self.cards)
         # return the remaining cards
         return self.cards
 
