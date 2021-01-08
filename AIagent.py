@@ -15,11 +15,10 @@ class AI_agent(Agent):
         self.mycards_huase=gamestate.colored_card_dic[self.name]
 
         # try to take an action
-        # print("before_cards:",self.mycards)
+        print("before_cards:",self.mycards)
         self.possible_choice=get_legal_choices(self.cards)
+        #print("possible_choice",self.possible_choice)
         self.cards_out=self.get_action(gamestate)
-        
-        # remove cards_out
         self.cards=self.mycards
         # print("try:",self.cards_out)
         # print("after_cards:",self.mycards)
@@ -37,8 +36,6 @@ class AI_agent(Agent):
                         self.mycards_huase.remove(card)
                         break
             gamestate.colored_card_dic[self.name]=self.mycards_huase
-        else:
-            print("`PASS!`")
         # return the remaining cards
         return self.cards
 
@@ -106,8 +103,6 @@ class AI_agent(Agent):
                         if choices[i] > other_cards[0] :
                             choices=number_to_pai(choices)
                             act=[choices[i],choices[i],choices[i]]
-
-                            #delete
                             for j in range(3) :
                                 self.mycards.remove(act[j])
                             self.possible_choice=get_legal_choices(self.mycards)
@@ -145,13 +140,12 @@ class AI_agent(Agent):
             length_other=len(other_cards)
             #每个值频率为2
             if length_other <6 :return None
-            dict = {}
+            dic = {}
             for key in other_cards:
-                dict[key] = dict.get(key, 0) + 1
-            a=[]
-            a=dict.values()
-            for i in range(len(a)):
-                if a[i]!=2 :
+                dic[key] = dic.get(key, 0) + 1
+          
+            for i in dic.values():
+                if i!=2 :
                     return None
 
             #去重，再排序
@@ -183,14 +177,14 @@ class AI_agent(Agent):
             length_other=len(other_cards)
             if length_other <6 :return None
             #每个值频率为3
-            dict = {}
+            dic = {}
             for key in other_cards:
-                dict[key] = dict.get(key, 0) + 1
-            a=[]
-            a=dict.values()
-            for i in range(len(a)):
-                if a[i]!=3 :
+                dic[key] = dic.get(key, 0) + 1
+
+            for i in dic.values():
+                if i!=3 :
                     return None
+        
 
             #去重，再排序
             sorted(set(other_cards), key = other_cards.index)
@@ -306,11 +300,14 @@ class AI_agent(Agent):
                 we_action=[we_action]+[we_action]
             if rand_num==3:
                 we_action=[we_action]+[we_action]+[we_action]
-            for i in range(len(we_action)):
-                if we_action[i] in self.mycards:
-                    self.mycards.remove(we_action[i])
-                else:
-                    print(we_action[i], "delete failed!, mycards: ", self.mycards)
+            if we_action[0]=='1':we_action=[we_action]
+            if type(we_action) is list:
+                for one_card in we_action:
+                    self.mycards.remove(one_card)
+            else:
+                self.mycards.remove(we_action)
+            '''for i in range(len(we_action)):
+                self.mycards.remove(we_action[i])'''
             return we_action
         else:
             # passively put cards
