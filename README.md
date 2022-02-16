@@ -1,11 +1,12 @@
 # land_lord_off
-For CS181 final project in Shanghaitech. The structure referred to our homework, the Pacman Games of the [CS188 at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
+For CS181 final project in Shanghaitech **from scratch**. The structure referred to our homework, the Pacman Games of the [CS188 at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
 
 ## References:
-(We read these just for refrences, but didn't implement any)
-### 简书上的斗地主策略 https://www.jianshu.com/p/9fb001daedcf
-### 洛谷猪国杀 https://www.luogu.com.cn/problem/P2482
-### 比较全面的相关算法 https://ninesun.blog.csdn.net/article/list/3
+We read some of belowfor refrences, but didn't implement any. The final version borrows some scoring strategies from an old Chinese book.
+
+- [简书上的斗地主策略](https://www.jianshu.com/p/9fb001daedcf)
+- [洛谷猪国杀](https://www.luogu.com.cn/problem/P2482)
+- [比较全面的相关算法](https://ninesun.blog.csdn.net/article/list/3)
 
 ## Plan before 1st pre
 1. Pokers delivery in random.
