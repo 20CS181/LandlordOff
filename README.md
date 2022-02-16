@@ -1,5 +1,5 @@
 # land_lord_off
-For cs181 final project in Shanghaitech.
+For CS181 final project in Shanghaitech. The structure referred to our homework, the Pacman Games of the [CS188 at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
 
 ## References:
 (We read these just for refrences, but didn't implement any)
