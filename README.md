@@ -1,5 +1,6 @@
 # land_lord_off
 For CS181 final project in Shanghaitech **from scratch**. The structure referred to our homework, the Pacman Games of the [CS188 at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
+You can access some ducuments [here](https://github.com/20CS181/LandlordOffDcuments)
 
 ## References:
 We read some of belowfor refrences, but didn't implement any. The final version borrows some scoring strategies from an old Chinese book.
