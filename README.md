@@ -1,5 +1,8 @@
 # land_lord_off
-This project is the final for the CS181: Artificial Intelligence @Shanghaitech, **completely from scratch**.    
+This project is the final for the CS181: Artificial Intelligence @Shanghaitech, **completely from scratch**.   
+
+We implemented the card game interactions with three computer agents, including a random agent and two AI agent, and one human agent, through which one could play with a computer agent or a human as well. The improved AI agent turned out to achieve an outcome of 18% rise in the winning rate.
+
 The code structure referred to our homework, the Pacman Games borrowed from the [CS188 course at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
 You could access some ducuments [here](https://github.com/20CS181/LandlordOffDcuments)
 
