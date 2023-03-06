@@ -1,7 +1,7 @@
-# Land Lord Off
+# Landlord Off
 This project is the final for the CS181: Artificial Intelligence @Shanghaitech, **completely from scratch**.   
 
-Land Lord Off, or Dou Di Zhu, is a popular card game in China, especially during the Chinese Lunar New Year. We implemented the card game interactions with three computer agents, including a random agent and two AI agent, and one human agent, through which one could play with a computer agent or a human as well. The improved AI agent turned out to achieve an outcome of 18% rise in the winning rate.
+Landlord Off, or Dou Di Zhu, is a popular card game in China, especially during the Chinese Lunar New Year. We implemented the card game interactions with three computer agents, including a random agent and two AI agent, and one human agent, through which one could play with a computer agent or a human as well. The improved AI agent turned out to achieve an outcome of 18% rise in the winning rate.
 You could access our Documents [here](https://github.com/20CS181/LandlordOffDcuments), containing a final report and presentation slides.
 
 The code structure referred to our homework, the Pacman Games borrowed from the [CS188 course at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
@@ -37,7 +37,7 @@ some necessary class and function of the GameState
 
 ## Play the Game
 * To play the game, run `main.py`.
-* For the rules, there are 10 legal card types:('a''b' in range(3, 10), 'x''X' are kings)
+* For the rules, there are 10 legal card types:('a''b' in range(3, 10), 'x''X' are two kings, no joker)
 1. dan_pai:         ['a']
 2. two same:        ['a','a']
 3. three same       ['a','a','a']
