@@ -1,13 +1,14 @@
 # land_lord_off
-For CS181 final project in Shanghaitech **from scratch**. The structure referred to our homework, the Pacman Games of the [CS188 at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
-You can access some ducuments [here](https://github.com/20CS181/LandlordOffDcuments)
+This project is the final for the CS181: Artificial Intelligence @Shanghaitech, **completely from scratch**.    
+The code structure referred to our homework, the Pacman Games borrowed from the [CS188 course at UC Berkeley](https://inst.eecs.berkeley.edu/~cs188/sp21/). It turned out so simple and elegant with OOP game developing with Python and we love it!
+You could access some ducuments [here](https://github.com/20CS181/LandlordOffDcuments)
 
 ## References:
-We read some of belowfor refrences, but didn't implement any. The final version borrows some scoring strategies from an old Chinese book.
+As a start, we read docs linked below for refrences, but didn't copy any. The final version borrows some scoring strategies from an old Chinese card book.
 
-- [简书上的斗地主策略](https://www.jianshu.com/p/9fb001daedcf)
-- [洛谷猪国杀](https://www.luogu.com.cn/problem/P2482)
-- [比较全面的相关算法](https://ninesun.blog.csdn.net/article/list/3)
+- [简书 - 斗地主策略](https://www.jianshu.com/p/9fb001daedcf)
+- [洛谷 - 猪国杀](https://www.luogu.com.cn/problem/P2482)
+- [blog](https://ninesun.blog.csdn.net/article/list/3)
 
 ## Plan before 1st pre
 1. Pokers delivery in random.
@@ -16,8 +17,8 @@ We read some of belowfor refrences, but didn't implement any. The final version 
 
 
 ## Agents
+(last updated: 12/12, 2020)
 ### in `HumanAgent.py`:
-12/ 12
 claim `class Agent`, `class HumanAgent`.
 (`utils.py`, `play.py`用来测试`HumanAgent`)
 
